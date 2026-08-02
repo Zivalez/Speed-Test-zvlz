@@ -10,7 +10,10 @@
   <meta property="og:description" content="Measure the route to the ZVLZ Tokyo node from your browser.">
   <title>ZVLZ Tokyo | Network Test</title>
 
-  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap">
+  <link rel="stylesheet" href="assets/css/app.css?v=5">
   <script>
     function getCookieValue(name) {
       const match = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`);
@@ -23,7 +26,7 @@
     ) {
       document.head.insertAdjacentHTML(
         "beforeend",
-        '<link id="darkmode" rel="stylesheet" href="assets/css/darkmode.css">'
+        '<link id="darkmode" rel="stylesheet" href="assets/css/darkmode.css?v=5">'
       );
     }
   </script>
@@ -42,7 +45,7 @@
 
     <object
       id="OpenSpeedTest-UI"
-      data="assets/images/app.svg"
+      data="assets/images/app.svg?v=5"
       type="image/svg+xml"
       aria-label="ZVLZ Tokyo network speed test interface"
     ></object>
@@ -110,8 +113,8 @@
 
     var openChannel = "dev";
   </script>
-  <script type="module" src="assets/js/sound.js"></script>
-  <script src="assets/js/app-2.5.4.min.js"></script>
-  <script src="assets/js/darkmode.js"></script>
+  <script type="module" src="assets/js/sound.js?v=5"></script>
+  <script src="assets/js/app-2.5.4.min.js?v=5"></script>
+  <script src="assets/js/darkmode.js?v=5"></script>
 </body>
 </html>

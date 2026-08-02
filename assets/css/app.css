@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "ZVLZ Roboto";
+  src: url("../fonts/roboto-v30-latin-regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ZVLZ Roboto";
+  src: url("../fonts/roboto-v30-latin-500.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
 :root {
   --cream: #f3ead7;
   --cream-soft: #f8f8f8;
@@ -14,7 +30,7 @@
   --paper: #fffdf8;
   --selection-bg: #9f3045;
   --selection-text: #fffdf8;
-  --font-sans: "Satoshi", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-sans: "Satoshi", "ZVLZ Roboto", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
 ::selection {

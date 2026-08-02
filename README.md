@@ -6,6 +6,8 @@ The measurement engine is based on OpenSpeedTest 2.5.4. The interface, branding,
 
 Interface audio uses the locally vendored UI SFX 0.4.0 runtime with the `studio` pack at full master volume. Sound is optional, persists its on/off preference in the browser, and never uses the hover cue.
 
+Typography uses Satoshi through Fontshare's official webfont API. The bundled Roboto WOFF2 files are registered as a local fallback so mobile devices do not fall back to an unrelated system font if Fontshare is unavailable.
+
 ## What it measures
 
 - Download and upload throughput in Mbps
