@@ -6,7 +6,7 @@
   --zvlz-wine: #9f3045;
   --zvlz-burgundy: #531d2a;
   --zvlz-muted: #6d6b69;
-  --zvlz-font: "Satoshi", "Inter", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --zvlz-font: "Inter", "Segoe UI", system-ui, sans-serif;
 }
 
 @keyframes zvlz-state-in {
@@ -466,4 +466,61 @@ html[data-theme="dark"] #openpacketloss-root .status-text {
   #openpacketloss-root .error-btn {
     transform: none !important;
   }
+}
+
+
+.zvlz-packet-nav a:focus-visible,
+.zvlz-packet-nav button:focus-visible,
+#openpacketloss-root button:focus-visible,
+#openpacketloss-root input:focus-visible,
+#openpacketloss-root summary:focus-visible {
+  outline: 3px solid var(--zvlz-coral);
+  outline-offset: 3px;
+}
+
+#openpacketloss-root .setting-note {
+  display: block;
+  margin-top: 4px;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+#openpacketloss-root .setting-control-row {
+  margin-top: 8px;
+}
+
+#openpacketloss-root .setting-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+#openpacketloss-root .setting-checkbox input {
+  cursor: pointer;
+}
+
+#openpacketloss-root .setting-checkbox span {
+  font-size: 13px;
+}
+
+#openpacketloss-root .packet-count-display {
+  margin: 0;
+  padding: 8px 0;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+#openpacketloss-root .setting-actions {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  text-align: center;
+}
+
+#openpacketloss-root .reset-settings-button {
+  padding: 6px 16px;
+  cursor: pointer;
+  font-size: 12px;
 }

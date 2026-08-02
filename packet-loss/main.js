@@ -2359,7 +2359,7 @@ var ErrorHandler = class {
             
             <div class="error-modal-actions">
                 ${onRetry ? '<button class="error-btn error-btn-retry">Retry</button>' : ""}
-                <a href="https://openpacketloss.com/faq.php#${errorType}" target="_blank" class="error-btn error-btn-learn">Learn More</a>
+                <a href="https://openpacketloss.com/faq.php#${errorType}" target="_blank" rel="noopener noreferrer" class="error-btn error-btn-learn">Learn More</a>
             </div>
         `;
     modal.appendChild(content);
@@ -2485,6 +2485,12 @@ var calculationModeGroup = root.querySelector("#calculation-mode-group");
 var statusText = root.querySelector("#status-text");
 var statusContent = root.querySelector("#status-content");
 var statusCursor = root.querySelector("#status-cursor");
+var lastFocusedElement = null;
+
+function prefersReducedMotion() {
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+}
+
 function updateTestButton() {
   btnTest.textContent = "TEST PACKET LOSS";
 }
@@ -2574,6 +2580,13 @@ function typeWriter(text, element, speed = 10, onComplete) {
   if (typewriterInterval) clearInterval(typewriterInterval);
   if (statusText) statusText.classList.remove("cursor-blinking");
   if (statusContent) statusContent.textContent = "";
+
+  if (prefersReducedMotion()) {
+    if (element) element.textContent = text;
+    if (onComplete) onComplete();
+    return;
+  }
+
   let i = 0;
   typewriterInterval = setInterval(() => {
     if (i < text.length) {
@@ -2639,11 +2652,40 @@ async function startTest() {
   }
 }
 function showSettings() {
+  lastFocusedElement = document.activeElement;
   settingsModal.classList.add("active");
+  settingsModal.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => closeSettings.focus());
 }
 function hideSettings() {
   settingsModal.classList.remove("active");
+  settingsModal.setAttribute("aria-hidden", "true");
+  if (lastFocusedElement instanceof HTMLElement) lastFocusedElement.focus();
 }
+
+settingsModal.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    hideSettings();
+    return;
+  }
+
+  if (event.key !== "Tab") return;
+  const focusable = Array.from(settingsModal.querySelectorAll(
+    'button:not([disabled]), input:not([disabled]), summary, [href], [tabindex]:not([tabindex="-1"])'
+  )).filter((element) => element.getClientRects().length > 0);
+  if (focusable.length === 0) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
 root.querySelectorAll(".preset-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const preset = btn.dataset.preset;

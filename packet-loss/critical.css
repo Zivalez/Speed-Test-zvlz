@@ -1,0 +1,39 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+[data-theme="dark"],
+.dark {
+  background-color: #09090b;
+}
+
+[data-theme="light"] .openpacketloss-app#openpacketloss-root,
+.openpacketloss-app#openpacketloss-root {
+  --success-color: #e84d2a;
+}
+
+[data-theme="dark"] .openpacketloss-app#openpacketloss-root,
+.dark .openpacketloss-app#openpacketloss-root {
+  --bg-color: #09090b;
+  --container-bg: #18181b;
+  --controls-bg: #09090b;
+  --text-color: #f4f4f5;
+  --client-color: #e84d2a;
+  --server-color: #9f3045;
+  --line-color: #e84d2a;
+  --grid-color: #27272a;
+  --loss-color: #531d2a;
+  --success-color: #e84d2a;
+  --button-bg: #29251f;
+  --button-border: #f3ead7;
+  --button-hover: #531d2a;
+  --path-color: rgba(243, 234, 215, 0.35);
+  --glow-strong: none;
+  --glow-subtle: none;
+  --glow-loss: none;
+}

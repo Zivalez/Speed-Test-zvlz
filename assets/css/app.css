@@ -1,4 +1,36 @@
 @font-face {
+  font-family: "Inter";
+  src: url("/packet-loss/fonts/inter-400.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/packet-loss/fonts/inter-500.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/packet-loss/fonts/inter-600.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/packet-loss/fonts/inter-700.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "ZVLZ Roboto";
   src: url("../fonts/roboto-v30-latin-regular.woff2") format("woff2");
   font-style: normal;
@@ -33,7 +65,7 @@
   --graph-grid-on-dark: rgba(243, 234, 215, 0.26);
   --selection-bg: #9f3045;
   --selection-text: #fffdf8;
-  --font-sans: "Satoshi", "ZVLZ Roboto", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", "ZVLZ Roboto", "Segoe UI", system-ui, -apple-system, sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 140ms;
@@ -74,8 +106,16 @@ body {
 }
 
 button,
-a {
+a,
+[role="button"] {
   -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
 }
 
 .skip-link {
@@ -158,6 +198,15 @@ a {
     transform: scale(1.07);
     box-shadow: 7px 7px 0 var(--coral);
   }
+}
+
+.loader[data-state="error"] .loader-mark {
+  animation: none;
+  box-shadow: 5px 5px 0 var(--burgundy);
+}
+
+.loader[data-state="error"] .loader-copy::after {
+  display: none;
 }
 
 .loader-copy::after {
@@ -782,7 +831,29 @@ a {
     transition-duration: 0.01ms !important;
   }
 
-  .loader-copy::after {
+  .loader[data-state="error"] .loader-mark {
+  animation: none;
+  box-shadow: 5px 5px 0 var(--burgundy);
+}
+
+.loader[data-state="error"] .loader-copy::after {
+  display: none;
+}
+
+.loader-copy::after {
     animation: none !important;
   }
+}
+
+
+.readout-value,
+.metric-number,
+.result-number,
+#downResult,
+#upRestxt,
+#pingResult,
+#jitterDesk,
+#pingMobres,
+#JitterResultMon {
+  font-variant-numeric: tabular-nums;
 }

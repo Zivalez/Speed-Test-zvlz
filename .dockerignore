@@ -1,5 +1,9 @@
 .git
 .gitignore
+dist
+*.zip
+*.log
 .DS_Store
-README.md
-compose.yml
+__pycache__
+*.pyc
+packet-loss-server/target

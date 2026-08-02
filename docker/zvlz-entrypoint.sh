@@ -1,25 +1,46 @@
 #!/bin/sh
 set -eu
+umask 027
 
-html_root="${ZVLZ_HTML_ROOT:-/usr/share/nginx/html}"
+node_info_path="${ZVLZ_NODE_INFO_PATH:-/tmp/zvlz/node-info.json}"
 geo_api="${NODE_GEO_API:-https://ipwho.is}"
 geo_enabled="${NODE_GEO_AUTO_DETECT:-true}"
 lookup_ip="${NODE_PUBLIC_IP:-${NAT_1TO1_IP:-}}"
 geo_json='{}'
 geo_ok="false"
+packetloss_pid=""
+nginx_pid=""
+
+log() {
+  printf '%s\n' "[zvlz] $*"
+}
+
+warn() {
+  printf '%s\n' "[zvlz] WARNING: $*" >&2
+}
+
+cleanup() {
+  trap - INT TERM EXIT
+  [ -n "$nginx_pid" ] && kill -TERM "$nginx_pid" 2>/dev/null || true
+  [ -n "$packetloss_pid" ] && kill -TERM "$packetloss_pid" 2>/dev/null || true
+  [ -n "$nginx_pid" ] && wait "$nginx_pid" 2>/dev/null || true
+  [ -n "$packetloss_pid" ] && wait "$packetloss_pid" 2>/dev/null || true
+}
+
+trap cleanup INT TERM EXIT
+
+mkdir -p "$(dirname "$node_info_path")"
 
 if [ "$geo_enabled" != "false" ] && [ "$geo_enabled" != "0" ]; then
   lookup_url="${geo_api%/}/"
-  if [ -n "$lookup_ip" ]; then
-    lookup_url="${geo_api%/}/${lookup_ip}"
-  fi
+  [ -n "$lookup_ip" ] && lookup_url="${geo_api%/}/${lookup_ip}"
 
-  if geo_response="$(curl -fsSL --connect-timeout 4 --max-time 10 "$lookup_url" 2>/dev/null)" \
+  if geo_response="$(curl -fsSL --retry 2 --retry-delay 1 --connect-timeout 4 --max-time 10 "$lookup_url" 2>/dev/null)" \
     && printf '%s' "$geo_response" | jq -e '.success == true' >/dev/null 2>&1; then
     geo_json="$geo_response"
     geo_ok="true"
   else
-    echo "[zvlz] Location API unavailable; using environment/fallback metadata." >&2
+    warn "location API unavailable; using environment or fallback metadata"
   fi
 fi
 
@@ -47,9 +68,7 @@ isp="${isp:-Network provider unknown}"
 public_ip="${public_ip:-Public IP unknown}"
 
 source="fallback"
-if [ "$geo_ok" = "true" ]; then
-  source="ipwho.is"
-fi
+[ "$geo_ok" = "true" ] && source="ipwho.is"
 if [ -n "${NODE_CITY:-}${NODE_REGION:-}${NODE_COUNTRY:-}${NODE_PUBLIC_IP:-}" ]; then
   source="environment override"
 fi
@@ -58,12 +77,10 @@ if [ -z "${NAT_1TO1_IP:-}" ] && [ "$public_ip" != "Public IP unknown" ]; then
   export NAT_1TO1_IP="$public_ip"
 fi
 
-if [ "${NODE_HIDE_IP:-false}" = "true" ]; then
-  display_ip="HIDDEN"
-else
-  display_ip="$public_ip"
-fi
+display_ip="$public_ip"
+[ "${NODE_HIDE_IP:-false}" = "true" ] && display_ip="HIDDEN"
 
+temporary_node_info="${node_info_path}.tmp.$$"
 jq -n \
   --arg city "$city" \
   --arg region "$region" \
@@ -90,40 +107,51 @@ jq -n \
     asn: (if $asn == "" then "" elif ($asn | startswith("AS")) then $asn else "AS" + $asn end),
     ip: $ip,
     source: $source
-  }' > "$html_root/node-info.json.tmp"
-mv "$html_root/node-info.json.tmp" "$html_root/node-info.json"
+  }' > "$temporary_node_info"
+mv "$temporary_node_info" "$node_info_path"
 
-echo "[zvlz] Active node: $city, $region, $country ($source)"
+build_id="$(jq -r '.build_id // "unknown"' /usr/share/nginx/html/build-info.json 2>/dev/null || printf 'unknown')"
+log "build: $build_id"
+log "active node: $city, $region, $country ($source)"
 if [ -n "${NAT_1TO1_IP:-}" ]; then
-  echo "[zvlz] WebRTC public address: $NAT_1TO1_IP"
+  log "WebRTC public address: $NAT_1TO1_IP"
 else
-  echo "[zvlz] WARNING: no public NAT address detected; set NAT_1TO1_IP in Dokploy." >&2
+  warn "no public NAT address detected; set NAT_1TO1_IP in Dokploy"
 fi
 
+nginx -t
 openpacketloss-server &
 packetloss_pid=$!
+
+attempt=0
+until curl -fsS --max-time 2 "http://127.0.0.1:${PORT:-8080}/health" >/dev/null 2>&1; do
+  attempt=$((attempt + 1))
+  if ! kill -0 "$packetloss_pid" 2>/dev/null; then
+    wait "$packetloss_pid"
+    exit $?
+  fi
+  if [ "$attempt" -ge 20 ]; then
+    warn "packet-loss backend did not become healthy"
+    exit 1
+  fi
+  sleep 0.5
+done
+
 nginx -g 'daemon off;' &
 nginx_pid=$!
 
-stop_services() {
-  kill -TERM "$packetloss_pid" "$nginx_pid" 2>/dev/null || true
-}
-
-trap stop_services INT TERM EXIT
-
 while kill -0 "$packetloss_pid" 2>/dev/null && kill -0 "$nginx_pid" 2>/dev/null; do
-  sleep 2
+  sleep 1
 done
 
-stop_services
-set +e
-wait "$packetloss_pid"
-packetloss_status=$?
-wait "$nginx_pid"
-nginx_status=$?
-set -e
-
-if [ "$packetloss_status" -ne 0 ]; then
-  exit "$packetloss_status"
+packetloss_status=0
+nginx_status=0
+if ! kill -0 "$packetloss_pid" 2>/dev/null; then
+  wait "$packetloss_pid" || packetloss_status=$?
 fi
+if ! kill -0 "$nginx_pid" 2>/dev/null; then
+  wait "$nginx_pid" || nginx_status=$?
+fi
+
+[ "$packetloss_status" -ne 0 ] && exit "$packetloss_status"
 exit "$nginx_status"

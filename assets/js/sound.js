@@ -5,7 +5,7 @@ import { createUISFX } from "../vendor/uisfx.js";
 const player = createUISFX({
   pack: "studio",
   volume: 1,
-  preferences: { key: "zvlz-tokyo:sound" }
+  preferences: { key: "zvlz-network:sound" }
 });
 
 let activeLoop = null;

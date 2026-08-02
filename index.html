@@ -1,38 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-app="speed-test">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f3ead7">
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="A private ZVLZ self-hosted network benchmark for speed, latency, jitter, and packet loss.">
+  <meta name="zvlz-build" content="__ZVLZ_BUILD_ID__">
   <meta property="og:title" content="ZVLZ Network Test">
   <meta property="og:description" content="Measure the route to the active ZVLZ node from your browser.">
   <title>ZVLZ | Network Test</title>
 
-  <link rel="preconnect" href="https://api.fontshare.com">
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap">
-  <link rel="stylesheet" href="assets/css/app.css?v=7">
-  <script>
-    function getCookieValue(name) {
-      const match = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`);
-      return match ? match.pop() : "";
-    }
-
-    if (
-      getCookieValue("mode") === "dark" ||
-      (getCookieValue("mode") === "" && window.matchMedia?.("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.head.insertAdjacentHTML(
-        "beforeend",
-        '<link id="darkmode" rel="stylesheet" href="assets/css/darkmode.css?v=7">'
-      );
-    }
-  </script>
-
-  <link rel="icon" type="image/svg+xml" href="assets/images/zvlz-mark.svg">
-  <link rel="manifest" href="assets/images/icons/site.webmanifest">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme-init.js"></script>
+  <link rel="icon" type="image/svg+xml" href="/assets/images/zvlz-mark.svg">
+  <link rel="manifest" href="/assets/images/icons/site.webmanifest">
 </head>
 <body>
   <a class="skip-link" href="#network-test">Skip to network test</a>
@@ -45,7 +27,7 @@
 
     <object
       id="OpenSpeedTest-UI"
-      data="assets/images/app.svg?v=7"
+      data="/assets/images/app.svg"
       type="image/svg+xml"
       aria-label="ZVLZ network speed test interface"
     ></object>
@@ -63,59 +45,10 @@
     <span><span class="js-node-location">Locating node</span> · Self-hosted network benchmark</span>
   </footer>
 
-  <script>
-    // Add more endpoints here. The engine selects the node with the lowest latency.
-    var openSpeedTestServerList = [
-      {
-        ServerName: "ZVLZ Auto Node",
-        Download: "downloading",
-        Upload: "upload",
-        ServerIcon: "DefaultIcon"
-      }
-    ];
-
-    var pingSamples = 10;
-    var jitterFinalSample = 0.5;
-    var setPingSamples = true;
-    var pingTimeOut = 5000;
-    var setPingTimeout = true;
-    var pingMethod = "GET";
-    var pingFile = "Upload";
-
-    // Each upload request sends a 30 MiB random blob.
-    var ulDataSize = 30;
-    var ulDelay = 300;
-    var dlDelay = 300;
-
-    // Browser/protocol overhead compensation. Use ?Clean to disable it.
-    var upAdjust = 1.04;
-    var dlAdjust = 1.04;
-    var enableClean = true;
-
-    var dlDuration = 12;
-    var ulDuration = 12;
-    var dlThreads = 6;
-    var ulThreads = 6;
-    var setHTTPReq = true;
-
-    // Optional result persistence. Disabled by default.
-    var saveData = false;
-    var saveDataURL = "/save-result";
-
-    var stressTest = true;
-    var selectTest = true;
-    var selectServer = true;
-    var enableRun = true;
-
-    function ostOnload() {
-      console.info("ZVLZ Network Test ready");
-    }
-
-    var openChannel = "dev";
-  </script>
-  <script src="assets/js/node-info.js?v=7"></script>
-  <script type="module" src="assets/js/sound.js?v=7"></script>
-  <script src="assets/js/app-2.5.4.min.js?v=7"></script>
-  <script src="assets/js/darkmode.js?v=7"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/node-info.js"></script>
+  <script type="module" src="/assets/js/sound.js"></script>
+  <script src="/assets/js/app-2.5.4.js"></script>
+  <script src="/assets/js/darkmode.js"></script>
 </body>
 </html>

@@ -112,11 +112,11 @@
           <text x="96" y="49" class="brand-kicker">ZVLZ NETWORK</text>
           <text id="nodeCityResultDesk" x="96" y="68" class="brand-name" style="font-size:20px">AUTO NODE</text>
           <text id="nodeRouteResultDesk" x="735" y="55" class="node-label">HTTP / 6 STREAMS / DETECTING</text>
-          <g class="sound-control" onclick="toggleZvlzSound()" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
+          <g class="sound-control" data-zvlz-action="toggle-sound" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
             <rect x="960" y="29" width="86" height="42" class="sound-panel surface"/>
             <text x="1003" y="55" class="node-label sound-status" text-anchor="middle">SFX ON</text>
           </g>
-          <g class="reset-control" onclick="zvlzResetTest()" tabindex="0" role="button" aria-label="Reset test">
+          <g class="reset-control" data-zvlz-action="reset-test" tabindex="0" role="button" aria-label="Reset test">
             <rect x="1060" y="29" width="82" height="42" class="reset-panel surface"/>
             <text x="1101" y="55" class="node-label" text-anchor="middle">RESET</text>
           </g>
@@ -133,7 +133,7 @@
         <use id="downSymbolDesk" href="#downSymbol" x="272" y="362" width="20" height="20" class="direction-icon"/>
         <use id="upSymbolDesk" href="#upSymbol" x="272" y="362" width="20" height="20" class="direction-icon"/>
         <use id="ConnectErrorDesk" href="#ConnectError" x="329" y="225" width="32" height="32" class="ConnectError"/>
-        <g id="retestButtonDesk" class="retest-control" onclick="zvlzRestartTest()" tabindex="0" role="button" aria-label="Run the speed test again">
+        <g id="retestButtonDesk" class="retest-control" data-zvlz-action="restart-test" tabindex="0" role="button" aria-label="Run the speed test again">
           <rect x="237" y="509" width="216" height="48" class="retest-depth"/>
           <rect x="237" y="503" width="216" height="48" class="retest-base"/>
           <text x="345" y="533" class="button-label" style="font-size:13px">TEST AGAIN</text>
@@ -183,18 +183,18 @@
         <text x="104" y="51" class="brand-kicker">ZVLZ NETWORK</text>
         <text id="nodeCityIntroDesk" x="104" y="73" class="brand-name" style="font-size:24px">AUTO NODE</text>
 
-        <g id="nightmode" class="theme-toggle darkmode" onclick="toggleSkin()" tabindex="0" role="button" aria-label="Use dark theme">
+        <g id="nightmode" class="theme-toggle darkmode" data-zvlz-action="toggle-theme" tabindex="0" role="button" aria-label="Use dark theme">
           <rect x="1056" y="31" width="86" height="42" class="theme-panel surface"/>
           <use href="#dark" x="1068" y="42" width="20" height="20"/>
           <text x="1115" y="57" class="theme-label" text-anchor="middle">DARK</text>
         </g>
-        <g id="daymode" class="theme-toggle darkmode" onclick="toggleSkin()" tabindex="0" role="button" aria-label="Use light theme">
+        <g id="daymode" class="theme-toggle darkmode" data-zvlz-action="toggle-theme" tabindex="0" role="button" aria-label="Use light theme">
           <rect x="1056" y="31" width="86" height="42" class="theme-panel surface"/>
           <use href="#light" x="1068" y="42" width="20" height="20"/>
           <text x="1115" y="57" class="theme-label" text-anchor="middle">LIGHT</text>
         </g>
 
-        <g class="sound-control" onclick="toggleZvlzSound()" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
+        <g class="sound-control" data-zvlz-action="toggle-sound" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
           <rect x="950" y="31" width="92" height="42" class="sound-panel surface"/>
           <text x="996" y="57" class="node-label sound-status" text-anchor="middle">SFX ON</text>
         </g>
@@ -249,11 +249,11 @@
         <use href="#zvlzMark" x="24" y="22" width="38" height="38" style="color:var(--cream)"/>
         <text x="74" y="39" class="brand-kicker" style="font-size:9px">ZVLZ NETWORK</text>
         <text id="nodeCityResultMob" x="74" y="56" class="brand-name" style="font-size:18px">AUTO NODE</text>
-        <g class="sound-control" onclick="toggleZvlzSound()" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
+        <g class="sound-control" data-zvlz-action="toggle-sound" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
           <rect x="242" y="24" width="50" height="36" class="sound-panel surface"/>
           <text x="267" y="46" class="node-label sound-status" text-anchor="middle" style="font-size:7px">SFX ON</text>
         </g>
-        <g class="reset-control" onclick="zvlzResetTest()" tabindex="0" role="button" aria-label="Reset test">
+        <g class="reset-control" data-zvlz-action="reset-test" tabindex="0" role="button" aria-label="Reset test">
           <rect x="300" y="24" width="50" height="36" class="reset-panel surface"/>
           <text x="325" y="46" class="node-label" text-anchor="middle" style="font-size:8px">RESET</text>
         </g>
@@ -274,7 +274,7 @@
           <use href="#progressBar" x="42" y="350" width="290" height="10"/>
           <use id="progressStatus-Mob" href="#introProgress" x="42" y="350" width="290" height="10" class="intro-Progress"/>
         </g>
-        <g id="retestButtonMob" class="retest-control" onclick="zvlzRestartTest()" tabindex="0" role="button" aria-label="Run the speed test again">
+        <g id="retestButtonMob" class="retest-control" data-zvlz-action="restart-test" tabindex="0" role="button" aria-label="Run the speed test again">
           <rect x="112" y="321" width="150" height="38" class="retest-depth"/>
           <rect x="112" y="316" width="150" height="38" class="retest-base"/>
           <text x="187" y="340" class="button-label" style="font-size:10px">TEST AGAIN</text>
@@ -311,16 +311,16 @@
         <text x="80" y="42" class="brand-kicker" style="font-size:9px">ZVLZ NETWORK</text>
         <text id="nodeCityIntroMob" x="80" y="60" class="brand-name" style="font-size:19px">AUTO NODE</text>
 
-        <g id="nightmode-Mob" class="theme-toggle darkmode" onclick="toggleSkin()" tabindex="0" role="button" aria-label="Use dark theme">
+        <g id="nightmode-Mob" class="theme-toggle darkmode" data-zvlz-action="toggle-theme" tabindex="0" role="button" aria-label="Use dark theme">
           <rect x="300" y="25" width="50" height="38" class="theme-panel surface"/>
           <use href="#dark" x="315" y="34" width="20" height="20"/>
         </g>
-        <g id="daymode-Mob" class="theme-toggle darkmode" onclick="toggleSkin()" tabindex="0" role="button" aria-label="Use light theme">
+        <g id="daymode-Mob" class="theme-toggle darkmode" data-zvlz-action="toggle-theme" tabindex="0" role="button" aria-label="Use light theme">
           <rect x="300" y="25" width="50" height="38" class="theme-panel surface"/>
           <use href="#light" x="315" y="34" width="20" height="20"/>
         </g>
 
-        <g class="sound-control" onclick="toggleZvlzSound()" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
+        <g class="sound-control" data-zvlz-action="toggle-sound" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
           <rect x="242" y="25" width="50" height="38" class="sound-panel surface"/>
           <text x="267" y="48" class="node-label sound-status" text-anchor="middle" style="font-size:7px">SFX ON</text>
         </g>

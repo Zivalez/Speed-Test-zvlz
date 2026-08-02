@@ -6,13 +6,72 @@
     Read full license terms @ http://go.openspeedtest.com/License
     If you have any Questions, ideas or Comments Please Send it via -> https://go.openspeedtest.com/SendMessage
 */ 
-window.onload = function() {
-  var appSVG = document.getElementById("OpenSpeedTest-UI");
-  appSVG.parentNode.replaceChild(appSVG.contentDocument.documentElement, appSVG);
-  window.applyZvlzNodeInfo?.();
-  ostOnload();
-  OpenSpeedTest.Start();
-};
+(function bootstrapOpenSpeedTest() {
+  "use strict";
+
+  var started = false;
+
+  function showBootstrapError(message) {
+    var loader = document.getElementById("loading_app");
+    var copy = loader?.querySelector(".loader-copy");
+    if (copy) copy.textContent = message;
+    if (loader) loader.dataset.state = "error";
+    console.error("ZVLZ speed-test bootstrap failed:", message);
+  }
+
+  function startEngine() {
+    if (started) return;
+    if (!document.getElementById("OpenSpeedtest")) {
+      showBootstrapError("Interface failed to load");
+      return;
+    }
+
+    started = true;
+    window.applyZvlzNodeInfo?.();
+    document.dispatchEvent(new CustomEvent("zvlz:ui-mounted"));
+    ostOnload();
+    OpenSpeedTest.Start();
+  }
+
+  function mountObject(objectElement) {
+    var svgRoot = objectElement?.contentDocument?.documentElement;
+    if (!svgRoot) return false;
+    objectElement.replaceWith(svgRoot);
+    startEngine();
+    return true;
+  }
+
+  function boot() {
+    if (document.getElementById("OpenSpeedtest")) {
+      startEngine();
+      return;
+    }
+
+    var objectElement = document.getElementById("OpenSpeedTest-UI");
+    if (!objectElement) {
+      showBootstrapError("Interface container is missing");
+      return;
+    }
+
+    if (mountObject(objectElement)) return;
+
+    objectElement.addEventListener("load", function () {
+      if (!mountObject(objectElement)) {
+        showBootstrapError("Interface asset could not be mounted");
+      }
+    }, { once: true });
+
+    objectElement.addEventListener("error", function () {
+      showBootstrapError("Interface asset could not be downloaded");
+    }, { once: true });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    queueMicrotask(boot);
+  }
+})();
 (function(OpenSpeedTest) {
   var Status;
   var ProG;
@@ -21,6 +80,51 @@ window.onload = function() {
       callback();
     }
   };
+
+  var metricAnimationFrames = new WeakMap();
+
+  function reduceMotion() {
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+  }
+
+  function animateMetric(element, target, formatter, duration) {
+    if (!element) return;
+
+    var numericTarget = Number(target);
+    if (!Number.isFinite(numericTarget) || reduceMotion()) {
+      element.textContent = formatter(numericTarget);
+      return;
+    }
+
+    var previousFrame = metricAnimationFrames.get(element);
+    if (previousFrame) window.cancelAnimationFrame(previousFrame);
+
+    var current = Number.parseFloat(element.textContent);
+    if (!Number.isFinite(current)) current = 0;
+
+    var start = window.performance.now();
+    var animationDuration = duration || 650;
+
+    element.animate?.(
+      [{ opacity: 0.55 }, { opacity: 1 }],
+      { duration: Math.min(animationDuration, 420), easing: "cubic-bezier(0.2, 0, 0, 1)" }
+    );
+
+    function frame(now) {
+      var progress = Math.min(1, (now - start) / animationDuration);
+      var eased = 1 - Math.pow(1 - progress, 4);
+      element.textContent = formatter(current + (numericTarget - current) * eased);
+
+      if (progress < 1) {
+        metricAnimationFrames.set(element, window.requestAnimationFrame(frame));
+      } else {
+        element.textContent = formatter(numericTarget);
+        metricAnimationFrames.delete(element);
+      }
+    }
+
+    metricAnimationFrames.set(element, window.requestAnimationFrame(frame));
+  }
   function _(el) {
     if (!(this instanceof _)) {
       return new _(el);
@@ -164,7 +268,7 @@ window.onload = function() {
     this.UI_Mob.fade("in", 260, uiLoaded);
     function uiLoaded(argument) {
       Status = "Loaded";
-      console.log("ZVLZ Tokyo interface ready");
+      console.info("ZVLZ interface ready");
     }
   };
   openSpeedtestShow.prototype.Symbol = function(dir) {
@@ -329,74 +433,59 @@ window.onload = function() {
     this.mobileLiveFooter.el.style.display = "none";
   };
   openSpeedtestShow.prototype.uploadResult = function(upload) {
-    if (upload < 1) {
-      this.upRestxt.el.textContent = upload.toFixed(3);
-    }
-    if (upload >= 1 && upload < 9999) {
-      this.upRestxt.el.textContent = upload.toFixed(1);
-    }
-    if (upload >= 10000 && upload < 99999) {
-      this.upRestxt.el.textContent = upload.toFixed(1);
-      this.upRestxt.el.style.fontSize = "20px";
-    }
-    if (upload >= 100000) {
-      this.upRestxt.el.textContent = upload.toFixed(1);
-      this.upRestxt.el.style.fontSize = "18px";
-    }
+    var value = Number(upload) || 0;
+    var formatter = value < 1
+      ? function(number) { return number.toFixed(3); }
+      : function(number) { return number.toFixed(1); };
+
+    this.upRestxt.el.style.fontSize = value >= 100000 ? "18px" : value >= 10000 ? "20px" : "";
+    animateMetric(this.upRestxt.el, value, formatter, 700);
   };
-  openSpeedtestShow.prototype.pingResults = function(data, Display) {
-    var ShowData = data;
-    if (Display === "Ping") {
-      if (ShowData >= 1 && ShowData < 10000) {
-        this.pingResult.el.textContent = Math.floor(ShowData);
-        this.pingMobres.el.textContent = Math.floor(ShowData);
-      } else if (ShowData >= 0 && ShowData < 1) {
-        if (ShowData == 0) {
-          ShowData = 0;
-        }
-        this.pingResult.el.textContent = ShowData;
-        this.pingMobres.el.textContent = ShowData;
+  openSpeedtestShow.prototype.pingResults = function(data, Display, reveal) {
+    var ShowData = Number(data);
+    if (Display === "Ping" && Number.isFinite(ShowData)) {
+      var formatter = ShowData >= 1
+        ? function(number) { return String(Math.floor(number)); }
+        : function(number) { return String(Number(number.toFixed(1))); };
+
+      if (reveal) {
+        animateMetric(this.pingResult.el, ShowData, formatter, 560);
+        animateMetric(this.pingMobres.el, ShowData, formatter, 560);
+      } else {
+        this.pingResult.el.textContent = formatter(ShowData);
+        this.pingMobres.el.textContent = formatter(ShowData);
       }
     }
     if (Display === "Error") {
-      this.oDoLiveSpeed.el.textContent = ShowData;
+      this.oDoLiveSpeed.el.textContent = data;
     }
   };
   openSpeedtestShow.prototype.downloadResult = function(download) {
-    if (download < 1) {
-      this.downResult.el.textContent = download.toFixed(3);
-    }
-    if (download >= 1 && download < 9999) {
-      this.downResult.el.textContent = download.toFixed(1);
-    }
-    if (download >= 10000 && download < 99999) {
-      this.downResult.el.textContent = download.toFixed(1);
-      this.downResult.el.style.fontSize = "20px";
-    }
-    if (download >= 100000) {
-      this.downResult.el.textContent = download.toFixed(1);
-      this.downResult.el.style.fontSize = "18px";
-    }
+    var value = Number(download) || 0;
+    var formatter = value < 1
+      ? function(number) { return number.toFixed(3); }
+      : function(number) { return number.toFixed(1); };
+
+    this.downResult.el.style.fontSize = value >= 100000 ? "18px" : value >= 10000 ? "20px" : "";
+    animateMetric(this.downResult.el, value, formatter, 700);
   };
-  openSpeedtestShow.prototype.jitterResult = function(data, Display) {
-    var ShowData = data;
-    if (Display === "Jitter") {
-      if (ShowData >= 1 && ShowData < 10000) {
-        this.jitterDesk.el.textContent = Math.floor(ShowData);
-        if (ShowData >= 1 && ShowData < 100) {
-          this.JitterResultMon.el.textContent = Math.floor(ShowData);
-        }
-        if (ShowData >= 100) {
-          var kData = (ShowData / 1000).toFixed(1);
-          this.JitterResultMon.el.textContent = kData + "k";
-        }
-      } else if (ShowData >= 0 && ShowData < 1) {
-        if (ShowData == 0) {
-          ShowData = 0;
-        }
-        this.jitterDesk.el.textContent = ShowData;
-        this.JitterResultMon.el.textContent = ShowData;
-      }
+  openSpeedtestShow.prototype.jitterResult = function(data, Display, reveal) {
+    var ShowData = Number(data);
+    if (Display !== "Jitter" || !Number.isFinite(ShowData)) return;
+
+    var desktopFormatter = ShowData >= 1
+      ? function(number) { return String(Math.floor(number)); }
+      : function(number) { return String(Number(number.toFixed(1))); };
+    var mobileFormatter = ShowData >= 100
+      ? function(number) { return (number / 1000).toFixed(1) + "k"; }
+      : desktopFormatter;
+
+    if (reveal) {
+      animateMetric(this.jitterDesk.el, ShowData, desktopFormatter, 560);
+      animateMetric(this.JitterResultMon.el, ShowData, mobileFormatter, 560);
+    } else {
+      this.jitterDesk.el.textContent = desktopFormatter(ShowData);
+      this.JitterResultMon.el.textContent = mobileFormatter(ShowData);
     }
   };
   openSpeedtestShow.prototype.LiveSpeed = function(data, Display) {
@@ -1267,8 +1356,8 @@ window.onload = function() {
           statusJitterFinal = finalJitter[finalLeastPingResultIndex];
           statusPingTest = "Busy";
           Show.LiveSpeed(statusPingFinal, "Ping");
-          Show.pingResults(statusPingFinal, "Ping");
-          Show.jitterResult(statusJitterFinal, "Jitter");
+          Show.pingResults(statusPingFinal, "Ping", true);
+          Show.jitterResult(statusJitterFinal, "Jitter", true);
           pingEstimate = statusPingFinal;
           jitterEstimate = statusJitterFinal;
           if (SelectTest) {

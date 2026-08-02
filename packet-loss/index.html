@@ -1,105 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-app="packet-loss">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZVLZ | Packet Loss Test</title>
     <meta name="description" content="Measure packet loss, latency, jitter, and UDP path stability to the active self-hosted ZVLZ node.">
+    <meta name="zvlz-build" content="__ZVLZ_BUILD_ID__">
     <link rel="icon" type="image/svg+xml" href="/assets/images/zvlz-mark.svg" />
     <meta name="apple-mobile-web-app-title" content="ZVLZ Packet Loss" />
     <meta name="theme-color" content="#f3ead7" />
-    <!-- Preload Fonts -->
-
-
-    <link rel="preconnect" href="https://api.fontshare.com">
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap">
     <!-- Local fallback fonts -->
-    <link rel="stylesheet" href="fonts.min.css?v=1776935747193">
+    <link rel="stylesheet" href="/packet-loss/fonts.min.css">
     <!-- External CSS -->
-    <link rel="stylesheet" href="styles.min.css?v=1776935747193">
-    <style id="theme-inline-css">
-        /* Standalone Reset - Only applies to index.html, not when embedded */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        /* Immediate background fix to prevent flicker */
-        [data-theme="dark"], .dark {
-            background-color: #09090b;
-        }
-
-        /* Light Mode Critical Variables */
-        [data-theme="light"] .openpacketloss-app#openpacketloss-root,
-        .openpacketloss-app#openpacketloss-root {
-            --success-color: #e84d2a;
-        }
-
-        /* Critical app variables before styles.css loads */
-        [data-theme="dark"] .openpacketloss-app#openpacketloss-root,
-        .dark .openpacketloss-app#openpacketloss-root {
-            --bg-color: #09090b;
-            --container-bg: #18181b;
-            --controls-bg: #09090b;
-            --text-color: #f4f4f5;
-            --client-color: #e84d2a;
-            --server-color: #9f3045;
-            --line-color: #e84d2a;
-            --grid-color: #27272a;
-            --loss-color: #531d2a;
-            --success-color: #e84d2a;
-            --button-bg: #29251f;
-            --button-border: #f3ead7;
-            --button-hover: #531d2a;
-            --path-color: rgba(243, 234, 215, 0.35);
-            --glow-strong: none;
-            --glow-subtle: none;
-            --glow-loss: none;
-        }
-    </style>
-    <link rel="stylesheet" href="zvlz.css?v=1">
-    <script>
-        (function () {
-            // Theme Detection: URL > Cookie > System
-            const params = new URLSearchParams(window.location.search);
-            const mode = params.get('mode') || document.cookie.match('(^|;)\\s*mode\\s*=\\s*([^;]+)')?.pop();
-            const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            const theme = (mode === 'dark' || mode === 'light') ? mode : systemMode;
-
-            // Apply immediately to prevent flicker
-            document.documentElement.dataset.theme = theme;
-            if (theme === 'dark') document.documentElement.classList.add('dark');
-
-            // Platform configuration: 'web' or 'self'
-            const PLATFORM = 'self';
-
-            window.TEST_CONFIG = {
-                platform: PLATFORM,
-                presets: {
-                    quick: {
-                        duration: 10,        // seconds
-                        packetCount: 640,
-                        interval: 15.625     // ms
-                    },
-                    default: {
-                        duration: 30,        // seconds
-                        packetCount: 1920,
-                        interval: 15.625     // ms
-                    },
-                    max: {
-                        duration: PLATFORM === 'web' ? 300 : Infinity,
-                        packetCount: PLATFORM === 'web' ? 6000 : Infinity,
-                        interval: 50         // ms
-                    }
-                }
-            };
-        })();
-    </script>
+    <link rel="stylesheet" href="/packet-loss/styles.min.css">
+    <link rel="stylesheet" href="/packet-loss/critical.css">
+    <link rel="stylesheet" href="/packet-loss/zvlz.css">
+    <script src="/assets/js/theme-init.js"></script>
+    <script src="/packet-loss/config.js"></script>
 </head>
 
 <body data-page="packet-loss">
@@ -116,7 +34,7 @@
         <nav class="zvlz-packet-nav" aria-label="Network tests">
             <a href="/">SPEED TEST</a>
             <span aria-current="page">PACKET LOSS</span>
-            <button class="sound-control" type="button" onclick="toggleZvlzSound()" aria-label="Toggle interface sound" aria-pressed="true"><span class="sound-status">SFX ON</span></button>
+            <button class="sound-control" type="button" data-zvlz-action="toggle-sound" aria-label="Toggle interface sound" aria-pressed="true"><span class="sound-status">SFX ON</span></button>
         </nav>
     </header>
     <div id="openpacketloss-root" class="openpacketloss-app">
@@ -183,28 +101,28 @@
             <!-- Start Card Overlay -->
             <div id="start-overlay" class="start-overlay">
                 <div class="start-card">
-                    <button id="theme-btn" class="theme-toggle" title="Toggle Theme">Dark</button>
-                    <button id="btn-test" class="test-button">
+                    <button id="theme-btn" class="theme-toggle" type="button" title="Toggle theme">Dark</button>
+                    <button id="btn-test" class="test-button" type="button">
                         TEST PACKET LOSS
                     </button>
-                    <button id="btn-settings" class="settings-button" title="Settings">
+                    <button id="btn-settings" class="settings-button" type="button" title="Settings" aria-haspopup="dialog" aria-controls="settings-modal">
                         Settings
                     </button>
                 </div>
             </div>
 
             <!-- Status Text Area -->
-            <div id="status-text" class="status-text hidden">
+            <div id="status-text" class="status-text hidden" role="status" aria-live="polite">
                 <span id="status-content"></span><span id="status-cursor">_</span>
             </div>
 
 
             <!-- Settings Modal -->
-            <div id="settings-modal" class="modal">
+            <div id="settings-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2>Test Settings</h2>
-                        <button id="close-settings" class="close-button">✕</button>
+                        <h2 id="settings-title">Test Settings</h2>
+                        <button id="close-settings" class="close-button" type="button" aria-label="Close settings">✕</button>
                     </div>
                     <div class="modal-body">
                         <!-- Quick Presets -->
@@ -219,19 +137,19 @@
 
                         <!-- Direction -->
                         <div class="setting-group">
-                            <label class="setting-label">Test Direction</label>
+                            <label class="setting-label">Loss Metric Direction</label>
                             <div class="radio-group">
                                 <label class="radio-label">
                                     <input type="radio" name="direction" value="both" checked>
-                                    <span>Both Directions</span>
+                                    <span>Combined View</span>
                                 </label>
                                 <label class="radio-label">
                                     <input type="radio" name="direction" value="c2s">
-                                    <span>Client to Server</span>
+                                    <span>Client to Server Loss</span>
                                 </label>
                                 <label class="radio-label">
                                     <input type="radio" name="direction" value="s2c">
-                                    <span>Server to Client</span>
+                                    <span>Server to Client Loss</span>
                                 </label>
                             </div>
                         </div>
@@ -259,7 +177,7 @@
                                     <span>Cumulative (all data)</span>
                                 </label>
                             </div>
-                            <small style="opacity: 0.7; font-size: 11px; display: block; margin-top: 4px;">
+                            <small class="setting-note">
                                 Real-time mode shows loss for last 10 seconds only - ideal for debugging hardware changes
                             </small>
                         </div>
@@ -271,51 +189,49 @@
                                 <label class="setting-label">Packet Interval (ms)</label>
                                 <input type="number" id="packet-interval" value="15.625" min="1" max="1000" step="0.001"
                                     class="number-input">
-                                <div style="margin-top: 8px;">
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" id="auto-interval" checked style="cursor: pointer;">
-                                        <span style="font-size: 13px;">Auto</span>
+                                <div class="setting-control-row">
+                                    <label class="setting-checkbox">
+                                        <input type="checkbox" id="auto-interval" checked>
+                                        <span>Auto</span>
                                     </label>
                                 </div>
-                                <div style="margin-top: 8px;">
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" id="show-network-metrics" style="cursor: pointer;">
-                                        <span style="font-size: 13px;">Show Network Metrics</span>
+                                <div class="setting-control-row">
+                                    <label class="setting-checkbox">
+                                        <input type="checkbox" id="show-network-metrics">
+                                        <span>Show Network Metrics</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="setting-group">
                                 <label class="setting-label">Calculated Packet Count</label>
-                                <p id="packet-count-display" style="font-size: 14px; color: var(--primary-color); margin: 0; padding: 8px 0;">1920 packets</p>
-                                <small style="opacity: 0.7; font-size: 11px; display: block; margin-top: 4px;">
+                                <p id="packet-count-display" class="packet-count-display">1920 packets</p>
+                                <small class="setting-note">
                                     Auto-calculated based on duration and interval
                                 </small>
                             </div>
                             <div class="setting-group">
-                                <label class="setting-label">Packet Size (bytes) - MTU Testing</label>
+                                <label class="setting-label">WebRTC Payload Size (bytes)</label>
                                 <input type="number" id="packet-size" value="100" min="50" max="9000" step="50"
                                     class="number-input">
-                                <div class="preset-buttons gap-small" style="margin-top: 8px;">
+                                <div class="preset-buttons gap-small setting-control-row">
                                     <button class="size-preset-btn" data-size="100">Small (100B)</button>
                                     <button class="size-preset-btn" data-size="576">IPv4 (576B)</button>
                                     <button class="size-preset-btn" data-size="1500">Ethernet (1500B)</button>
                                     <button class="size-preset-btn" data-size="9000">Jumbo (9000B)</button>
                                 </div>
-                                <small style="opacity: 0.7; font-size: 11px; display: block; margin-top: 4px;">
-                                    Large packets may require longer intervals
+                                <small class="setting-note">
+                                    Messages may be fragmented by WebRTC; this is not Path MTU discovery
                                 </small>
                             </div>
-                            <div
-                                style="text-align: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
-                                <button id="reset-settings"
-                                    style="font-size: 12px; padding: 6px 16px; cursor: pointer; transition: all 0.2s;">
+                            <div class="setting-actions">
+                                <button id="reset-settings" class="reset-settings-button" type="button">
                                     Reset to Defaults
                                 </button>
                             </div>
                         </details>
                     </div>
                     <div class="modal-footer">
-                        <button id="start-test-from-modal" class="primary-button">SAVE & START TEST</button>
+                        <button id="start-test-from-modal" class="primary-button" type="button">SAVE & START TEST</button>
                     </div>
                 </div>
             </div>
@@ -328,10 +244,10 @@
     </footer>
 
     <!-- External JavaScript Modules -->
-    <script src="/assets/js/node-info.js?v=6"></script>
-    <script type="module" src="/assets/js/sound.js?v=6"></script>
-    <script type="module" src="packet-shell.js?v=1"></script>
-    <script type="module" src="bundle.min.js?v=2"></script>
+    <script src="/assets/js/node-info.js"></script>
+    <script type="module" src="/assets/js/sound.js"></script>
+    <script type="module" src="/packet-loss/packet-shell.js"></script>
+    <script type="module" src="/packet-loss/main.js"></script>
 </body>
 
 </html>

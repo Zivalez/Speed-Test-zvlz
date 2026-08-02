@@ -6,8 +6,6 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, sync::Arc, env, net::SocketAddr, time::SystemTime};
-use std::fs;
-use std::path::Path;
 use tokio::sync::RwLock;
 use tokio::time::{timeout, Duration};
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -58,40 +56,6 @@ pub const DEFAULT_STUN_URL: &str = "auto";
 pub const MAX_MESSAGE_SIZE: usize = 64 * 1024;
 pub const MAX_DATA_CHANNELS_PER_PC: usize = 10;
 pub const MAX_SDP_SIZE: usize = 64 * 1024;
-
-pub const CONFIG_FILE: &str = ".env";
-pub const DEFAULT_CONFIG_TEMPLATE: &str = r#"# WebRTC UDP Test Server Configuration
-# All values have sensible defaults
-
-# Mode: 'web' (public/strict) or 'self' (self-hosted/flexible)
-PLATFORM_MODE=self
-
-PORT=8080
-STUN_PORT=3478
-
-# STUN URL: auto (detect local IP), stun:host:port, or none
-STUN_URL=auto
-
-# NAT 1-to-1 Mapping (for Docker/Cloud)
-#NAT_1TO1_IP=
-
-# Connection Limits
-MAX_CONNECTIONS=500
-MAX_CONNECTIONS_PER_IP=10
-
-# ICE Port Range (UDP)
-#ICE_PORT_MIN=
-#ICE_PORT_MAX=
-
-# Timeouts (seconds)
-ICE_GATHERING_TIMEOUT_SECS=5
-OVERALL_REQUEST_TIMEOUT_SECS=30
-STALE_CONNECTION_AGE_SECS=120
-PERIODIC_CLEANUP_INTERVAL_SECS=5
-
-# Logging: trace, debug, info, warn, error
-RUST_LOG=info
-"#;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum PlatformMode {
@@ -333,40 +297,6 @@ impl ServerConfig {
         info!("============================");
     }
 }
-
-pub fn ensure_config_file(config_path: &Path) {
-    if !config_path.exists() {
-        info!("Config file '{}' not found, creating with default settings...", config_path.display());
-        
-        match fs::write(config_path, DEFAULT_CONFIG_TEMPLATE) {
-            Ok(_) => {
-                info!("Created default config file: {}", config_path.display());
-                
-                // Set restrictive file permissions (Unix/Linux only)
-                #[cfg(unix)]
-                {
-                    use std::os::unix::fs::PermissionsExt;
-                    if let Ok(metadata) = fs::metadata(config_path) {
-                        let mut perms = metadata.permissions();
-                        perms.set_mode(0o600); // Owner read/write only
-                        if let Err(e) = fs::set_permissions(config_path, perms) {
-                            warn!("Failed to set restrictive permissions on {}: {}", config_path.display(), e);
-                        } else {
-                            info!("Set file permissions to 600 (owner read/write only)");
-                        }
-                    }
-                }
-                
-                info!("Please review and adjust settings for your environment.");
-            },
-            Err(e) => {
-                warn!("Failed to create default config file: {}. Using hardcoded defaults.", e);
-            }
-        }
-    }
-}
-
-
 
 pub fn detect_lan_ip() -> Option<String> {
     // We connect to a public IP (doesn't actually send any data)
@@ -981,5 +911,22 @@ pub async fn cleanup_connection(
     
     if let Err(e) = peer_connection.close().await {
         warn!("Error closing peer connection during cleanup: {}", e);
+    }
+}
+
+/// Close every active peer connection during graceful application shutdown.
+pub async fn close_all_connections(state: &Arc<AppState>) {
+    let connections = {
+        let mut peer_connections = state.peer_connections.write().await;
+        peer_connections
+            .drain()
+            .filter_map(|(_, metadata)| metadata.peer_connection)
+            .collect::<Vec<_>>()
+    };
+
+    for peer_connection in connections {
+        if let Err(error) = peer_connection.close().await {
+            warn!(%error, "failed to close peer connection during shutdown");
+        }
     }
 }
