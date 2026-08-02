@@ -13,13 +13,7 @@
     org: "",
     asn: "",
     ip: "Public IP pending",
-    source: "pending",
-    webrtc: {
-      host: "",
-      stun_port: 3478,
-      ice_port_min: 40000,
-      ice_port_max: 40050
-    }
+    source: "pending"
   };
 
   let nodeInfo = fallback;
@@ -116,24 +110,18 @@
   window.applyZvlzNodeInfo = applyNodeInfo;
   window.getZvlzNodeInfo = () => nodeInfo;
 
-  window.zvlzNodeInfoReady = fetch("/node-info.json", { cache: "no-store" })
+  fetch("/node-info.json", { cache: "no-store" })
     .then((response) => {
       if (!response.ok) throw new Error(`Node metadata returned ${response.status}`);
       return response.json();
     })
     .then((data) => {
-      nodeInfo = {
-        ...fallback,
-        ...data,
-        webrtc: { ...fallback.webrtc, ...(data.webrtc || {}) }
-      };
+      nodeInfo = { ...fallback, ...data };
       applyNodeInfo();
       document.dispatchEvent(new CustomEvent("zvlz:node-info", { detail: nodeInfo }));
-      return nodeInfo;
     })
     .catch(() => {
       applyNodeInfo();
-      return nodeInfo;
     });
 
   document.addEventListener("DOMContentLoaded", applyNodeInfo);

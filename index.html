@@ -10,8 +10,10 @@
   <meta property="og:description" content="Measure the route to the active ZVLZ node from your browser.">
   <title>ZVLZ | Network Test</title>
 
-  <link rel="stylesheet" href="assets/css/app.css?v=7">
-  <link rel="stylesheet" href="assets/landing/hero.css?v=8">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap">
+  <link rel="stylesheet" href="assets/css/app.css?v=6">
   <script>
     function getCookieValue(name) {
       const match = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`);
@@ -34,7 +36,6 @@
 </head>
 <body>
   <a class="skip-link" href="#network-test">Skip to network test</a>
-  <div id="zvlz-landing-root"></div>
 
   <main id="network-test" class="site-shell">
     <div id="loading_app" class="loader" role="status" aria-live="polite">
@@ -44,7 +45,7 @@
 
     <object
       id="OpenSpeedTest-UI"
-      data="assets/images/app.svg?v=7"
+      data="assets/images/app.svg?v=6"
       type="image/svg+xml"
       aria-label="ZVLZ network speed test interface"
     ></object>
@@ -112,11 +113,9 @@
 
     var openChannel = "dev";
   </script>
-  <script src="assets/js/node-info.js?v=7"></script>
+  <script src="assets/js/node-info.js?v=6"></script>
   <script type="module" src="assets/js/sound.js?v=6"></script>
-  <script src="assets/js/spinning-counter.js?v=7"></script>
-  <script src="assets/js/app-2.5.4.min.js?v=7"></script>
+  <script src="assets/js/app-2.5.4.min.js?v=6"></script>
   <script src="assets/js/darkmode.js?v=6"></script>
-  <script type="module" src="assets/landing/hero.js?v=8"></script>
 </body>
 </html>

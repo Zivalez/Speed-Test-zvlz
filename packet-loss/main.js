@@ -98,12 +98,6 @@ var TestEngine = class {
     if (window.STUN_CONFIG && window.STUN_CONFIG.url) {
       return window.STUN_CONFIG.url;
     }
-    const nodeInfo = window.getZvlzNodeInfo?.();
-    const webrtcHost = String(nodeInfo?.webrtc?.host || "").trim();
-    const stunPort = Number(nodeInfo?.webrtc?.stun_port) || 3478;
-    if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(webrtcHost)) {
-      return `stun:${webrtcHost}:${stunPort}`;
-    }
     const serverUrl = window.SERVER_CONFIG?.baseUrl || window.location.origin;
     try {
       const url = new URL(serverUrl);
@@ -111,30 +105,6 @@ var TestEngine = class {
       return stunUrl;
     } catch (e) {
       return "stun:stun.l.google.com:19302";
-    }
-  }
-
-  async verifySignalingService() {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5e3);
-    try {
-      const response = await fetch(getServerUrl("/health"), {
-        cache: "no-store",
-        signal: controller.signal
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      const health = await response.json();
-      if (health.status !== "healthy") {
-        throw new Error("backend reported an unhealthy state");
-      }
-      return health;
-    } catch (error) {
-      const reason = error.name === "AbortError" ? "request timed out" : error.message;
-      throw new Error(`Signaling health check failed: ${reason}`);
-    } finally {
-      clearTimeout(timeoutId);
     }
   }
 
@@ -695,9 +665,6 @@ var TestEngine = class {
           this.cleanup();
         }
       }, CONNECTION_TIMEOUT_MS);
-      await window.zvlzNodeInfoReady;
-      this.emit("status", { message: "Checking signaling service" });
-      await this.verifySignalingService();
       await this.setupPeerConnection();
       this.setupDataChannel(count, interval, duration);
       this.emit("status", { message: "Gathering network paths" });
@@ -2327,41 +2294,25 @@ var InputValidator = class {
 
 var ErrorHandler = class {
   static ERROR_CATALOG = {
-    "SIGNALING_UNAVAILABLE": {
-      code: "HTTP / SIGNAL",
-      title: "Signaling Service Unavailable",
-      message: "The browser can reach this page, but the packet-loss backend did not answer.",
-      technicalHelp: "Check the /health proxy and confirm the Rust service is running on internal port 8080."
-    },
-    "SIGNALING_REJECTED": {
-      code: "HTTP / OFFER",
-      title: "Handshake Rejected",
-      message: "The WebRTC backend rejected the browser offer.",
-      technicalHelp: "Check container logs for request limits, malformed SDP, or backend startup errors."
-    },
-    "UDP_PATH_BLOCKED": {
-      code: "UDP / ICE",
-      title: "UDP Path Unreachable",
-      message: "Signaling worked, but the browser and server could not establish a direct UDP path.",
-      technicalHelp: "Publish and allow 3478/UDP plus 40000-40050/UDP on the VPS. Dokploy must deploy compose.yml, not a Dockerfile-only application."
+    "CONNECTION_FAILED": {
+      title: "Connection Failed",
+      message: "Unable to establish WebRTC connection.",
+      technicalHelp: "WebRTC requires UDP traffic. Common ports: 3478 (STUN), 49152-65535 (media)"
     },
     "CONNECTION_TIMEOUT": {
-      code: "UDP / TIMEOUT",
       title: "Connection Timeout",
-      message: "The server did not complete ICE negotiation within 30 seconds.",
-      technicalHelp: "Confirm NAT_1TO1_IP matches the VPS public IPv4 and the provider firewall allows the configured UDP range."
+      message: "Connection attempt timed out.",
+      technicalHelp: "ICE negotiation took longer than 30 seconds"
     },
     "DATA_CHANNEL_ERROR": {
-      code: "UDP / CHANNEL",
       title: "Data Transfer Error",
       message: "Lost connection during test.",
-      technicalHelp: "The unreliable WebRTC data channel closed while packets were in flight."
+      technicalHelp: "DataChannel failed due to network instability"
     }
   };
   
   static showError(errorType, technicalDetails = null, onRetry = null) {
     const error = this.ERROR_CATALOG[errorType] || {
-      code: "SYSTEM / ERROR",
       title: "Error",
       message: errorType,
       causes: [],
@@ -2375,62 +2326,42 @@ var ErrorHandler = class {
     modal.id = "error-detail-modal";
     modal.className = "error-modal-overlay";
     const content = document.createElement("div");
-    content.className = "error-modal-compact t-modal";
-    const escapeHtml = (value) => String(value || "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+    content.className = "error-modal-compact";
     content.innerHTML = `
             <div class="error-modal-header">
-                <span class="error-code">${escapeHtml(error.code)}</span>
-                <button class="error-close" type="button" aria-label="Close error dialog">CLOSE</button>
+                <span class="error-icon">\u26A0\uFE0F</span>
+                <h2>${error.title}</h2>
             </div>
-            <h2>${escapeHtml(error.title)}</h2>
-            <p class="error-modal-message">${escapeHtml(error.message)}</p>
+            
+            <p class="error-modal-message">${error.message}</p>
+            
             ${error.technicalHelp || technicalDetails ? `
                 <div class="error-modal-technical-hint">
-                    <span>DEPLOYMENT CHECK</span>
-                    <p>${escapeHtml(error.technicalHelp || "")}</p>
-                    ${technicalDetails ? `<code class="error-detail">${escapeHtml(technicalDetails)}</code>` : ""}
+                    ${error.technicalHelp || ""}
+                    ${technicalDetails ? `<div class="error-detail">${technicalDetails}</div>` : ""}
                 </div>
             ` : ""}
+            
             <div class="error-modal-actions">
-                ${onRetry ? '<button type="button" class="error-btn error-btn-retry">RETRY CONNECTION</button>' : ""}
-                <button type="button" class="error-btn error-btn-back">BACK TO SETUP</button>
+                ${onRetry ? '<button class="error-btn error-btn-retry">Retry</button>' : ""}
+                <a href="https://openpacketloss.com/faq.php#${errorType}" target="_blank" class="error-btn error-btn-learn">Learn More</a>
             </div>
         `;
     modal.appendChild(content);
     root2.appendChild(modal);
-    requestAnimationFrame(() => content.classList.add("is-open"));
-    const closeModal = (returnToSetup = false, callback = null) => {
-      content.classList.remove("is-open");
-      content.classList.add("is-closing");
-      modal.classList.add("is-closing");
-      setTimeout(() => {
-        modal.remove();
-        if (returnToSetup) root2.querySelector("#start-overlay")?.classList.remove("hidden");
-        callback?.();
-      }, 150);
-    };
-    content.querySelector(".error-close")?.addEventListener("click", () => closeModal(true));
-    content.querySelector(".error-btn-back")?.addEventListener("click", () => closeModal(true));
     if (onRetry) {
       const retryBtn = content.querySelector(".error-btn-retry");
       retryBtn.addEventListener("click", () => {
-        closeModal(false, onRetry);
+        window.location.reload();
       });
     }
   }
   
   static mapErrorMessage(message) {
     const msg = message.toLowerCase();
-    if (msg.includes("signaling health check")) return "SIGNALING_UNAVAILABLE";
-    if (msg.includes("server rejected offer")) return "SIGNALING_REJECTED";
     if (msg.includes("timeout")) return "CONNECTION_TIMEOUT";
     if (msg.includes("datachannel") || msg.includes("data channel")) return "DATA_CHANNEL_ERROR";
-    return "UDP_PATH_BLOCKED";
+    return "CONNECTION_FAILED";
   }
   
   static showToast(message, type = "info") {
@@ -2531,7 +2462,7 @@ var statusText = root.querySelector("#status-text");
 var statusContent = root.querySelector("#status-content");
 var statusCursor = root.querySelector("#status-cursor");
 function updateTestButton() {
-  btnTest.textContent = "START PACKET TEST";
+  btnTest.textContent = "TEST PACKET LOSS";
 }
 function updatePacketCountDisplay() {
   if (testSettings.packetCount === Infinity) {
@@ -2591,23 +2522,63 @@ function updateSaveButtonState() {
     startBtn.title = "";
   }
 }
+var typewriterInterval = null;
 var showTimeoutId = null;
+var messageQueue = [];
+var isProcessingQueue = false;
+async function processMessageQueue() {
+  if (isProcessingQueue || messageQueue.length === 0) return;
+  isProcessingQueue = true;
+  while (messageQueue.length > 0) {
+    const message = messageQueue.shift();
+    if (statusText && statusText.classList.contains("hidden") && !showTimeoutId) {
+      statusText.classList.remove("hidden");
+    }
+    if (statusText && statusText.classList.contains("hidden")) {
+      isProcessingQueue = false;
+      return;
+    }
+    await new Promise((resolve) => {
+      typeWriter(message, statusContent, 10, resolve);
+    });
+    const holdTime = messageQueue.length > 0 ? 800 : 1200;
+    await new Promise((resolve) => setTimeout(resolve, holdTime));
+  }
+  isProcessingQueue = false;
+}
+function typeWriter(text, element, speed = 10, onComplete) {
+  if (typewriterInterval) clearInterval(typewriterInterval);
+  if (statusText) statusText.classList.remove("cursor-blinking");
+  if (statusContent) statusContent.textContent = "";
+  let i = 0;
+  typewriterInterval = setInterval(() => {
+    if (i < text.length) {
+      if (statusContent) statusContent.textContent = text.substring(0, i + 1);
+      i++;
+    } else {
+      clearInterval(typewriterInterval);
+      typewriterInterval = null;
+      if (statusText) statusText.classList.add("cursor-blinking");
+      if (onComplete) onComplete();
+    }
+  }, speed);
+}
 function updateStatusText(message) {
   if (!statusText) return;
-  statusText.classList.remove("hidden");
-  statusText.classList.remove("is-shown");
-  if (statusContent) statusContent.textContent = message;
-  void statusText.offsetHeight;
-  statusText.classList.add("is-shown");
+  messageQueue.push(message);
+  processMessageQueue();
 }
 function showConnectingState() {
   if (!statusText) return;
   if (showTimeoutId) clearTimeout(showTimeoutId);
   showTimeoutId = setTimeout(() => {
     if (statusText) statusText.classList.remove("hidden");
-    updateStatusText("Gathering network paths");
+    if (messageQueue.length === 0) {
+      messageQueue.push("Gathering network paths");
+    }
+    processMessageQueue();
     showTimeoutId = null;
-  }, 250);
+  }, 500);
 }
 function hideConnectingState() {
   if (!statusText) return;
@@ -2615,7 +2586,12 @@ function hideConnectingState() {
     clearTimeout(showTimeoutId);
     showTimeoutId = null;
   }
-  statusText.classList.remove("is-shown");
+  messageQueue = [];
+  isProcessingQueue = false;
+  if (typewriterInterval) {
+    clearInterval(typewriterInterval);
+    typewriterInterval = null;
+  }
   statusText.classList.add("hidden");
 }
 async function startTest() {
@@ -2640,17 +2616,9 @@ async function startTest() {
 }
 function showSettings() {
   settingsModal.classList.add("active");
-  const content = settingsModal.querySelector(".modal-content");
-  requestAnimationFrame(() => content?.classList.add("is-open"));
 }
 function hideSettings() {
-  const content = settingsModal.querySelector(".modal-content");
-  content?.classList.remove("is-open");
-  content?.classList.add("is-closing");
-  setTimeout(() => {
-    settingsModal.classList.remove("active");
-    content?.classList.remove("is-closing");
-  }, 150);
+  settingsModal.classList.remove("active");
 }
 root.querySelectorAll(".preset-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -2961,7 +2929,7 @@ function applyTheme(theme, silent = false) {
     document.documentElement.classList.remove("dark");
   }
   if (themeBtn) {
-    themeBtn.textContent = theme === "light" ? "DARK MODE" : "LIGHT MODE";
+    themeBtn.textContent = theme === "light" ? "Dark" : "Light";
   }
   if (!silent) {
     window.dispatchEvent(new CustomEvent("themeChanged", { detail: { theme } }));
@@ -3002,17 +2970,7 @@ startTestFromModal.addEventListener("click", () => {
   startTest();
 });
 resetSettingsBtn.addEventListener("click", () => {
-  if (!resetSettingsBtn.classList.contains("is-confirming")) {
-    resetSettingsBtn.classList.add("is-confirming");
-    resetSettingsBtn.textContent = "CONFIRM RESET";
-    setTimeout(() => {
-      resetSettingsBtn.classList.remove("is-confirming");
-      resetSettingsBtn.textContent = "RESET TO DEFAULTS";
-    }, 3e3);
-    return;
-  }
-  resetSettingsBtn.classList.remove("is-confirming");
-  resetSettingsBtn.textContent = "RESET TO DEFAULTS";
+  if (confirm("Reset all settings to defaults?")) {
     localStorage.removeItem("testSettings");
     testSettings = {
       version: SETTINGS_VERSION,
@@ -3054,6 +3012,7 @@ resetSettingsBtn.addEventListener("click", () => {
       radio.checked = false;
     });
     updateCalculationModeVisibility();
+  }
 });
 settingsModal.addEventListener("click", (e) => {
   if (e.target === settingsModal) {
