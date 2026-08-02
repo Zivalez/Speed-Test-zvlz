@@ -12,6 +12,9 @@
   --muted: #b8afa0;
   --line: #f3ead7;
   --paper: #29251f;
+  --control-hover: #37312a;
+  --inverse-muted: #635e55;
+  --graph-grid-on-dark: rgba(32, 29, 24, 0.28);
 }
 
 html,
@@ -45,9 +48,23 @@ body {
   stroke: rgba(243, 234, 215, 0.13);
 }
 
-.progress-track,
-.graph-grid {
+.progress-track {
   stroke: rgba(243, 234, 215, 0.13);
+}
+
+.graph-grid {
+  stroke: var(--graph-grid, rgba(243, 234, 215, 0.13));
+}
+
+/* Label & sub-label tombol START / TEST AGAIN harus tetap terbaca saat hover:
+   di dark mode base berubah jadi wine, jadi teks dipaksa terang mengikuti label. */
+.startButton:hover .button-label,
+.startButton:hover .button-subtitle,
+.startButton:focus .button-label,
+.startButton:focus .button-subtitle,
+.retest-control:hover .button-label,
+.retest-control:focus .button-label {
+  fill: var(--charcoal);
 }
 
 .metric-label-dark {

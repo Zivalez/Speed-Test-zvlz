@@ -154,12 +154,12 @@
         <g aria-label="Upload result">
           <rect x="925" y="96" width="217" height="246" class="surface-dark"/>
           <text x="951" y="130" class="metric-label metric-label-dark">02 / UPLOAD</text>
-          <use href="#upResultC2" x="951" y="146" width="170" height="52" style="--charcoal:var(--cream);--muted:#b8afa0"/>
-          <use href="#graphc2" x="951" y="230" width="166" height="68"/>
+          <use href="#upResultC2" x="951" y="146" width="170" height="52" style="--charcoal:var(--cream);--muted:var(--inverse-muted)"/>
+          <use href="#graphc2" x="951" y="230" width="166" height="68" style="--graph-grid: var(--graph-grid-on-dark)"/>
           <text x="951" y="320" class="micro-copy metric-label-dark">BROWSER → SERVER</text>
         </g>
 
-        <g aria-label="Ping result" style="--charcoal:#201d18;--muted:#531d2a">
+        <g aria-label="Ping result" style="--charcoal:#201d18;--muted:#201d18">
           <rect x="680" y="362" width="225" height="254" class="surface-accent"/>
           <text x="706" y="398" class="metric-label">03 / LATENCY</text>
           <use href="#pingResultC3" x="706" y="420" width="160" height="62"/>
@@ -226,10 +226,10 @@
         <rect x="711" y="126" width="416" height="414" fill="none" stroke="var(--cream)" opacity="0.24"/>
         <text x="743" y="174" class="metric-label metric-label-dark">ACTIVE NODE / AUTO DETECTED</text>
         <text id="nodeLocationDesk" x="743" y="241" class="brand-name-inverse" style="font-size:46px">LOCATING</text>
-        <text id="nodeRegionDesk" x="743" y="273" class="hero-copy" style="fill:#b8afa0">region · country</text>
+        <text id="nodeRegionDesk" x="743" y="273" class="hero-copy" style="fill:var(--inverse-muted)">region · country</text>
         <path d="M743 316H1095" stroke="var(--coral)" stroke-width="4"/>
         <text id="nodeProviderDesk" x="743" y="368" class="brand-name-inverse">NETWORK PROVIDER</text>
-        <text id="nodeMetaDesk" x="743" y="399" class="hero-copy" style="font-size:9px;fill:#b8afa0">ASN · TIMEZONE · PUBLIC IP</text>
+        <text id="nodeMetaDesk" x="743" y="399" class="hero-copy" style="font-size:9px;fill:var(--inverse-muted)">ASN · TIMEZONE · PUBLIC IP</text>
         <rect x="743" y="446" width="110" height="42" class="surface-accent"/>
         <text x="798" y="472" class="node-label" text-anchor="middle" style="fill:var(--charcoal)">HTTP 1.1</text>
         <rect x="869" y="446" width="132" height="42" fill="none" stroke="var(--cream)"/>
@@ -270,7 +270,7 @@
         <use id="ConnectErrorMob" href="#ConnectError" x="174" y="146" width="26" height="26" class="ConnectError"/>
         <g id="mobileLiveFooter">
           <use id="graphMob1" href="#graphc1" x="122" y="304" width="130" height="50"/>
-          <use id="graphMob2" href="#graphc2" x="122" y="304" width="130" height="50"/>
+          <use id="graphMob2" href="#graphc2" x="122" y="304" width="130" height="50" style="--graph-grid: var(--graph-grid-on-dark)"/>
           <use href="#progressBar" x="42" y="350" width="290" height="10"/>
           <use id="progressStatus-Mob" href="#introProgress" x="42" y="350" width="290" height="10" class="intro-Progress"/>
         </g>
@@ -289,10 +289,10 @@
         <g>
           <rect x="195" y="394" width="155" height="145" class="surface-dark"/>
           <text x="211" y="420" class="metric-label metric-label-dark" style="font-size:8px">02 / UPLOAD</text>
-          <use href="#upResultC2" x="211" y="434" width="130" height="48" style="--charcoal:var(--cream);--muted:#b8afa0"/>
+          <use href="#upResultC2" x="211" y="434" width="130" height="48" style="--charcoal:var(--cream);--muted:var(--inverse-muted)"/>
           <text x="211" y="518" class="micro-copy metric-label-dark" style="font-size:7px">BROWSER → SERVER</text>
         </g>
-        <g style="--charcoal:#201d18;--muted:#531d2a">
+        <g style="--charcoal:#201d18;--muted:#201d18">
           <rect x="24" y="555" width="155" height="145" class="surface-accent"/>
           <text x="40" y="581" class="metric-label" style="font-size:8px">03 / LATENCY</text>
           <use href="#pingResultC3" x="40" y="596" width="130" height="48"/>
@@ -334,7 +334,7 @@
         <rect x="25" y="340" width="325" height="146" class="surface-dark"/>
         <text x="45" y="369" class="metric-label metric-label-dark" style="font-size:8px">ACTIVE NODE / AUTO DETECTED</text>
         <text id="nodeLocationMob" x="45" y="412" class="brand-name-inverse" style="font-size:28px">LOCATING</text>
-        <text id="nodeRegionMob" x="45" y="441" class="hero-copy" style="font-size:10px;fill:#b8afa0">region · country</text>
+        <text id="nodeRegionMob" x="45" y="441" class="hero-copy" style="font-size:10px;fill:var(--inverse-muted)">region · country</text>
         <text id="nodeProviderMob" x="45" y="467" class="micro-copy metric-label-dark" style="font-size:7px">network provider · timezone</text>
         <rect x="255" y="363" width="70" height="28" class="surface-accent"/>
         <text x="290" y="381" class="node-label" text-anchor="middle" style="font-size:7px;fill:var(--charcoal)">LIVE NODE</text>

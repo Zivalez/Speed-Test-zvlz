@@ -706,6 +706,11 @@ var TestEngine = class {
         body: JSON.stringify({ sdp: this.pc.localDescription })
       });
       if (!response.ok) {
+        if ([404, 501, 502, 503, 504].includes(response.status)) {
+          throw new Error(
+            `Signaling server unavailable (HTTP ${response.status}): /webrtc/offer was not handled by the backend.`
+          );
+        }
         throw new Error(`Server rejected offer: ${response.status}`);
       }
       const answer = await response.json();
@@ -981,6 +986,11 @@ var TestEngine = class {
         body: JSON.stringify({ sdp: this.pc.localDescription })
       });
       if (!response.ok) {
+        if ([404, 501, 502, 503, 504].includes(response.status)) {
+          throw new Error(
+            `Signaling server unavailable (HTTP ${response.status}): /webrtc/offer was not handled by the backend.`
+          );
+        }
         throw new Error(`Server rejected offer: ${response.status}`);
       }
       const answer = await response.json();
@@ -2294,6 +2304,11 @@ var InputValidator = class {
 
 var ErrorHandler = class {
   static ERROR_CATALOG = {
+    "SIGNALING_UNAVAILABLE": {
+      title: "Backend Not Reachable",
+      message: "The packet-loss signaling server did not accept the request.",
+      technicalHelp: "The POST to /webrtc/offer must reach the openpacketloss-server backend. A static file server replies 404/501 because it cannot handle it. Run the full Docker compose stack (it starts the backend and proxies /webrtc/ automatically), or set window.SERVER_CONFIG.baseUrl in packet-loss/index.html to a running backend that allows CORS."
+    },
     "CONNECTION_FAILED": {
       title: "Connection Failed",
       message: "Unable to establish WebRTC connection.",
@@ -2359,6 +2374,15 @@ var ErrorHandler = class {
   
   static mapErrorMessage(message) {
     const msg = message.toLowerCase();
+    if (
+      msg.includes("signaling server") ||
+      msg.includes("failed to fetch") ||
+      msg.includes("networkerror") ||
+      msg.includes("load failed") ||
+      msg.includes("network request failed")
+    ) {
+      return "SIGNALING_UNAVAILABLE";
+    }
     if (msg.includes("timeout")) return "CONNECTION_TIMEOUT";
     if (msg.includes("datachannel") || msg.includes("data channel")) return "DATA_CHANNEL_ERROR";
     return "CONNECTION_FAILED";

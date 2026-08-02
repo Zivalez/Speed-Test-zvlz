@@ -25,12 +25,19 @@
   --secondary-deep: #531d2a;
   --graph-download: #e84d2a;
   --graph-upload: #f4cbc2;
-  --muted: #6d6b69;
+  --muted: #57544d;
   --line: #201d18;
   --paper: #fffdf8;
+  --control-hover: #f8ddd3;
+  --inverse-muted: #b8afa0;
+  --graph-grid-on-dark: rgba(243, 234, 215, 0.26);
   --selection-bg: #9f3045;
   --selection-text: #fffdf8;
   --font-sans: "Satoshi", "ZVLZ Roboto", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 140ms;
+  --dur-med: 240ms;
 }
 
 ::selection {
@@ -139,6 +146,18 @@ a {
   box-shadow: 5px 5px 0 var(--coral);
   font-size: 24px;
   font-weight: 900;
+  animation: loader-mark-pulse 1.1s var(--ease-out) infinite;
+}
+
+@keyframes loader-mark-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow: 7px 7px 0 var(--coral);
+  }
 }
 
 .loader-copy::after {
@@ -220,6 +239,17 @@ a {
 
 .wine-block {
   fill: var(--wine);
+  animation: live-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.62;
+  }
 }
 
 .brand-kicker,
@@ -332,7 +362,8 @@ a {
 }
 
 .button-subtitle {
-  fill: rgba(243, 234, 215, 0.7);
+  fill: var(--cream);
+  opacity: 0.72;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 8px;
   text-anchor: middle;
@@ -350,11 +381,19 @@ a {
   fill: var(--charcoal);
   stroke: var(--charcoal);
   stroke-width: 1;
-  transition: fill 100ms cubic-bezier(0.2, 0, 0, 1), stroke 100ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .startButton .button-depth {
   fill: var(--coral);
+}
+
+.startButton .button-base,
+.startButton .button-label,
+.startButton .button-subtitle {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    fill var(--dur-fast) var(--ease-out),
+    stroke var(--dur-fast) var(--ease-out);
 }
 
 .startButton:hover .button-base,
@@ -363,15 +402,54 @@ a {
   stroke: var(--secondary-deep);
 }
 
+.startButton:hover .button-base,
+.startButton:hover .button-label,
+.startButton:hover .button-subtitle,
+.startButton:focus .button-base,
+.startButton:focus .button-label,
+.startButton:focus .button-subtitle {
+  transform: translateY(-3px);
+}
+
+.startButton:active .button-base,
+.startButton:active .button-label,
+.startButton:active .button-subtitle {
+  transform: translateY(3px);
+  transition-duration: 60ms;
+}
+
 .packet-test-button .packet-button-base {
   fill: #9f3045;
   stroke: var(--charcoal);
   stroke-width: 1;
-  transition: fill 100ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .packet-test-button .packet-button-depth {
   fill: var(--coral);
+}
+
+.packet-test-button .packet-button-base,
+.packet-test-button .packet-button-label,
+.packet-test-button .packet-button-subtitle {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    fill var(--dur-fast) var(--ease-out);
+}
+
+.packet-test-button:hover .packet-button-base,
+.packet-test-button:hover .packet-button-label,
+.packet-test-button:hover .packet-button-subtitle,
+.packet-test-button:focus .packet-button-base,
+.packet-test-button:focus .packet-button-label,
+.packet-test-button:focus .packet-button-subtitle {
+  transform: translateY(-3px);
+}
+
+.packet-test-button:active .packet-button-base,
+.packet-test-button:active .packet-button-label,
+.packet-test-button:active .packet-button-subtitle {
+  transform: translateY(3px);
+  transition-duration: 60ms;
 }
 
 .packet-button-label {
@@ -394,13 +472,43 @@ a {
   fill: #531d2a;
 }
 
+.theme-toggle,
+.sound-control,
+.reset-control {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus,
+.sound-control:hover,
+.sound-control:focus,
+.reset-control:hover,
+.reset-control:focus {
+  transform: translateY(-2px);
+}
+
+.theme-toggle:active,
+.sound-control:active,
+.reset-control:active {
+  transform: translateY(1px);
+  transition-duration: 60ms;
+}
+
+.theme-toggle .theme-panel,
+.sound-control .sound-panel,
+.reset-control .reset-panel {
+  transition:
+    fill var(--dur-fast) var(--ease-out),
+    stroke var(--dur-fast) var(--ease-out);
+}
+
 .Startsettings:hover .node-panel,
 .Startsettings:focus .node-panel,
 .theme-toggle:hover .theme-panel,
 .theme-toggle:focus .theme-panel,
 .reset-control:hover .reset-panel,
 .reset-control:focus .reset-panel {
-  fill: var(--cream);
+  fill: var(--control-hover);
   stroke: var(--secondary-accent);
   stroke-width: 2;
 }
@@ -458,7 +566,7 @@ a {
 
 .graph-grid {
   fill: none;
-  stroke: rgba(32, 29, 24, 0.12);
+  stroke: var(--graph-grid, rgba(32, 29, 24, 0.12));
   stroke-width: 0.6;
 }
 
@@ -478,6 +586,23 @@ a {
 .Symbol {
   fill: var(--coral);
   stroke: none;
+}
+
+.direction-icon {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: direction-pop var(--dur-med) var(--ease-spring) both;
+}
+
+@keyframes direction-pop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .direction-icon-bg {
@@ -511,10 +636,31 @@ a {
   fill: var(--coral);
 }
 
+.retest-control .retest-base,
+.retest-control .button-label {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    fill var(--dur-fast) var(--ease-out),
+    stroke var(--dur-fast) var(--ease-out);
+}
+
 .retest-control:hover .retest-base,
 .retest-control:focus .retest-base {
   fill: var(--secondary-deep);
   stroke: var(--secondary-deep);
+}
+
+.retest-control:hover .retest-base,
+.retest-control:hover .button-label,
+.retest-control:focus .retest-base,
+.retest-control:focus .button-label {
+  transform: translateY(-2px);
+}
+
+.retest-control:active .retest-base,
+.retest-control:active .button-label {
+  transform: translateY(3px);
+  transition-duration: 60ms;
 }
 
 .sound-control {
@@ -524,9 +670,19 @@ a {
 
 .sound-control:hover .sound-panel,
 .sound-control:focus .sound-panel {
-  fill: var(--cream);
+  fill: var(--control-hover);
   stroke: var(--secondary-accent);
   stroke-width: 2px;
+}
+
+.startButton:focus-visible .button-base,
+.packet-test-button:focus-visible .packet-button-base,
+.retest-control:focus-visible .retest-base,
+.theme-toggle:focus-visible .theme-panel,
+.sound-control:focus-visible .sound-panel,
+.reset-control:focus-visible .reset-panel {
+  stroke: var(--coral);
+  stroke-width: 3;
 }
 
 .ConnectError {
