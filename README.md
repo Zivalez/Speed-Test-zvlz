@@ -7,7 +7,7 @@ A single self-hosted network diagnostics project with two separate browser tests
 
 The interface uses the ZVLZ visual system and automatically detects the VPS public IP location when the container starts. The active node panel can show city, region, country, coordinates, timezone, ISP, ASN, and public IP.
 
-The landing surface is a small React/TypeScript island built from `ui/`. It uses `@splinetool/react-spline` for the supplied scene on capable desktop browsers and keeps a static ASCII fallback for mobile, reduced-motion mode, slow loading, or scene failure. The initial hero bundle is separate from the speed engine, and the heavier Spline runtime is lazy-loaded only when needed.
+The landing surface is a small React/TypeScript island built from `ui/`. Its visual is generated locally by a lightweight canvas renderer: a deterministic ASCII point field, boulder, and route figure inspired by the `hero-ascii-one` composition. It has no remote scene, watermark, image dependency, or 3D runtime. The hero bundle remains separate from the speed engine.
 
 Motion patterns are adapted from transitions.dev: staggered hero text, scale/fade modal states, text-state swaps, and vertical spinning result reels. Every custom transition has a `prefers-reduced-motion` fallback.
 
@@ -99,7 +99,7 @@ npm ci
 npm run build
 ```
 
-The Spline scene is loaded from `https://prod.spline.design/leR0WNBjCThoufYU/scene.splinecode`. The custom error boundary keeps the ASCII hero available if that remote scene cannot load.
+The ASCII scene is procedural and rendered once in the browser, then redrawn only when its canvas changes size. This keeps the landing surface self-contained and avoids downloading a remote visual runtime.
 
 ## Speed-test profile
 
