@@ -2,27 +2,45 @@ services:
   zvlz-network-test:
     build:
       context: .
-    restart: unless-stopped
+      dockerfile: Dockerfile
+
+    environment:
+      PLATFORM_MODE: "${PLATFORM_MODE:-self}"
+      PORT: "${PORT:-8080}"
+
+      STUN_PORT: "${STUN_PORT:-3478}"
+      STUN_URL: "${STUN_URL:-auto}"
+
+      ICE_PORT_MIN: "${ICE_PORT_MIN:-40000}"
+      ICE_PORT_MAX: "${ICE_PORT_MAX:-40050}"
+
+      NODE_GEO_AUTO_DETECT: "${NODE_GEO_AUTO_DETECT:-true}"
+      NODE_GEO_API: "${NODE_GEO_API:-https://ipwho.is}"
+
+      NAT_1TO1_IP: "${NAT_1TO1_IP}"
+
     ports:
-      - "3000:3000/tcp"
       - "3478:3478/udp"
       - "40000-40050:40000-40050/udp"
-    environment:
-      PLATFORM_MODE: self
-      PORT: "8080"
-      STUN_PORT: "3478"
-      STUN_URL: auto
-      ICE_PORT_MIN: "40000"
-      ICE_PORT_MAX: "40050"
-      NODE_GEO_AUTO_DETECT: "true"
-      NODE_GEO_API: https://ipwho.is
-      # Set this explicitly when automatic public-IP detection is unavailable.
-      # NAT_1TO1_IP: 203.0.113.10
+
+    expose:
+      - "3000"
+
     security_opt:
       - no-new-privileges:true
+
     read_only: true
+
     tmpfs:
       - /tmp:size=128m,mode=1777
       - /var/cache/nginx:size=64m,mode=0755,uid=101,gid=101
       - /var/run:size=8m,mode=0755,uid=101,gid=101
+
     stop_grace_period: 20s
+
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 5
