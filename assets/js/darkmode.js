@@ -1,6 +1,44 @@
-var dayMode,nightMode,darkStyle;window.addEventListener("load",changeSkin);
-function changeSkin(){dayModeMob=document.getElementById("daymode-Mob");nightModeMob=document.getElementById("nightmode-Mob");dayMode=document.getElementById("daymode");nightMode=document.getElementById("nightmode");""===getCookieValue("mode")&&(nightMode.style.display="none",nightModeMob.style.display="none",dayMode.style.display="inline-block",dayModeMob.style.display="inline-block");"dark"===getCookieValue("mode")&&setSkin("dark");"light"===getCookieValue("mode")&&setSkin("light");window.matchMedia&&
-window.matchMedia("(prefers-color-scheme: dark)").matches&&""===getCookieValue("mode")&&setSkin("dark")}
-function setSkin(a){"dark"===a&&(dayModeMob.style.display="none",nightModeMob.style.display="inline-block",dayMode.style.display="none",nightMode.style.display="inline-block",darkStyle=document.getElementById("darkmode"),null==darkStyle&&(document.head.innerHTML+='<link id="darkmode" rel="stylesheet" href="assets/css/darkmode.css" type="text/css"/>',createCookie("mode","dark")));"light"===a&&(nightModeMob.style.display="none",dayModeMob.style.display="inline-block",nightMode.style.display="none",
-dayMode.style.display="inline-block",(darkStyle=document.getElementById("darkmode"))&&darkStyle.parentNode.removeChild(darkStyle),createCookie("mode","light"))}function toggleSkin(){(darkStyle=document.getElementById("darkmode"))?setSkin("light"):setSkin("dark")}function createCookie(a,c,b){if(b){var d=new Date;d.setTime(d.getTime()+864E5*b);b="; expires="+d.toGMTString()}else b="";document.cookie=a+"="+c+b+"; path=/"}
-function getCookieValue(a,c){return(c=document.cookie.match("(^|;)\\s*"+a+"\\s*=\\s*([^;]+)"))?c.pop():""};
+let darkStyle;
+
+window.addEventListener("load", syncThemeControls);
+
+function syncThemeControls() {
+  const isDark = Boolean(document.getElementById("darkmode"));
+  const darkButtons = [document.getElementById("nightmode"), document.getElementById("nightmode-Mob")];
+  const lightButtons = [document.getElementById("daymode"), document.getElementById("daymode-Mob")];
+
+  darkButtons.forEach((button) => {
+    if (button) button.style.display = isDark ? "none" : "block";
+  });
+  lightButtons.forEach((button) => {
+    if (button) button.style.display = isDark ? "block" : "none";
+  });
+}
+
+function setSkin(mode) {
+  darkStyle = document.getElementById("darkmode");
+
+  if (mode === "dark" && !darkStyle) {
+    darkStyle = document.createElement("link");
+    darkStyle.id = "darkmode";
+    darkStyle.rel = "stylesheet";
+    darkStyle.href = "assets/css/darkmode.css";
+    document.head.appendChild(darkStyle);
+  }
+
+  if (mode === "light" && darkStyle) {
+    darkStyle.remove();
+  }
+
+  createCookie("mode", mode, 365);
+  syncThemeControls();
+}
+
+function toggleSkin() {
+  setSkin(document.getElementById("darkmode") ? "light" : "dark");
+}
+
+function createCookie(name, value, days) {
+  const expires = new Date(Date.now() + days * 86400000).toUTCString();
+  document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
+}

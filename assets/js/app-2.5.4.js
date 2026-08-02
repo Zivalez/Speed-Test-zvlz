@@ -27,22 +27,24 @@ window.onload = function() {
     this.el = document.getElementById(el);
   }
   _.prototype.fade = function fade(type, ms, callback00) {
-    var isIn = type === "in", opacity = isIn ? 0 : 1, interval = 14, duration = ms, gap = interval / duration, self = this;
+    var isIn = type === "in", duration = ms, self = this;
     if (isIn) {
       self.el.style.display = "block";
-      self.el.style.opacity = opacity;
+      self.el.style.opacity = 0;
     }
-    function func() {
-      opacity = isIn ? opacity + gap : opacity - gap;
+    var start = window.performance.now();
+    function frame(now) {
+      var progress = Math.min(1, (now - start) / duration);
+      var opacity = isIn ? progress : 1 - progress;
       self.el.style.opacity = opacity;
-      if (opacity <= 0) {
-        self.el.style.display = "none";
-      }
-      if (opacity <= 0 || opacity >= 1) {
-        window.clearInterval(fading, Callback(callback00));
+      if (progress < 1) {
+        window.requestAnimationFrame(frame);
+      } else {
+        if (!isIn) self.el.style.display = "none";
+        Callback(callback00);
       }
     }
-    var fading = window.setInterval(func, interval);
+    window.requestAnimationFrame(frame);
   };
   var easeOutQuint = function(t, b, c, d) {
     t /= d;
@@ -138,22 +140,27 @@ window.onload = function() {
     this.OpenSpeedtest.fade("in", 1000);
   };
   openSpeedtestShow.prototype.app = function() {
-    this.loader.fade("out", 500, this.ShowAppIntro());
+    var Self = this;
+    this.loader.fade("out", 300, function() {
+      Self.ShowAppIntro();
+    });
   };
   openSpeedtestShow.prototype.ShowAppIntro = function() {
     this.OpenSpeedtest.fade("in", 1000);
   };
   openSpeedtestShow.prototype.userInterface = function() {
     var Self = this;
-    this.intro_Desk.fade("out", 1000);
-    this.intro_Mob.fade("out", 1000, this.ShowUI());
+    this.intro_Desk.fade("out", 350);
+    this.intro_Mob.fade("out", 350, function() {
+      Self.ShowUI();
+    });
   };
   openSpeedtestShow.prototype.ShowUI = function() {
     this.UI_Desk.fade("in", 1000);
     this.UI_Mob.fade("in", 1000, uiLoaded);
     function uiLoaded(argument) {
       Status = "Loaded";
-      console.log("Developed by Vishnu. Email --\x3e me@vishnu.pro");
+      console.log("ZVLZ Tokyo interface ready");
     }
   };
   openSpeedtestShow.prototype.Symbol = function(dir) {
@@ -859,9 +866,9 @@ window.onload = function() {
       }
     }
     var osttm = "\u2122";
-    var myname = "OpenSpeedTest";
-    var com = ".com";
-    var ost = myname + osttm;
+    var myname = "ZVLZ Tokyo";
+    var com = "";
+    var ost = "DONE";
     function hiEnter(e) {
       if (e.key === "Enter") {
         runTasks();
@@ -992,38 +999,18 @@ window.onload = function() {
           }
         }
         if (Status === "Error") {
-          Show.showStatus("Check your network connection status.");
+          Show.showStatus("NETWORK ERROR / CHECK THE ROUTE");
           Show.ConnectionError();
           Status = "busy";
           clearInterval(Engine);
-          var dummyElement = document.createElement("div");
-          dummyElement.innerHTML = '<a xlink:href="https://openspeedtest.com/FAQ.php?ref=NetworkError" style="cursor: pointer" target="_blank"></a>';
-          var htmlAnchorElement = dummyElement.querySelector("a");
           Show.oDoLiveSpeed.el.textContent = "Network Error";
-          var circleSVG = document.getElementById("oDoLiveSpeed");
-          htmlAnchorElement.innerHTML = circleSVG.innerHTML;
-          circleSVG.innerHTML = dummyElement.innerHTML;
         }
         if (Status === "SendR") {
-          Show.showStatus("All done");
-          var dummyElement = document.createElement("div");
-          dummyElement.innerHTML = '<a xlink:href="https://openspeedtest.com?ref=Self-Hosted-Outro&run=5" style="cursor: pointer" target="_blank"></a>';
-          var htmlAnchorElement = dummyElement.querySelector("a");
+          Show.showStatus("COMPLETE / RESULTS STAY LOCAL");
           Show.oDoLiveSpeed.el.textContent = ost;
-          var circleSVG = document.getElementById("oDoLiveSpeed");
-          htmlAnchorElement.innerHTML = circleSVG.innerHTML;
-          circleSVG.innerHTML = dummyElement.innerHTML;
-          if (location.hostname != myname.toLowerCase() + com) {
-            saveTestData = "https://" + myname.toLowerCase() + com + "/results/show.php?" + "&d=" + downloadSpeed.toFixed(3) + "&u=" + uploadSpeed.toFixed(3) + "&p=" + pingEstimate + "&j=" + jitterEstimate + "&dd=" + (dataUsedfordl / 1048576).toFixed(3) + "&ud=" + (dataUsedforul / 1048576).toFixed(3) + "&ua=" + userAgentString;
-            saveTestData = encodeURI(saveTestData);
-            var circleSVG2 = document.getElementById("resultsData");
-            circleSVG2.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", saveTestData);
-            circleSVG2.setAttribute("target", "_blank");
-            if (saveData) {
-              ServerConnect(5);
-            }
-          } else {
-            ServerConnect(3);
+          if (saveData) {
+            saveTestData = "d=" + downloadSpeed.toFixed(3) + "&u=" + uploadSpeed.toFixed(3) + "&p=" + pingEstimate + "&j=" + jitterEstimate + "&dd=" + (dataUsedfordl / 1048576).toFixed(3) + "&ud=" + (dataUsedforul / 1048576).toFixed(3) + "&ua=" + encodeURIComponent(userAgentString);
+            ServerConnect(5);
           }
           Status = "busy";
           clearInterval(Engine);
@@ -1085,7 +1072,7 @@ window.onload = function() {
         dtDiff = dTime;
         dtTotal += dtLoad;
         if (dTotal > 0) {
-          LiveSpeedArr = dTotal / dtTotal / 125 * upAdjust;
+          LiveSpeedArr = dTotal / dtTotal / 125 * dlAdjust;
           currentSpeed = LiveSpeedArr;
         }
       }

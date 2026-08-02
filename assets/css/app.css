@@ -1,382 +1,516 @@
-/* roboto-regular - latin */
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("..fonts/roboto-v30-latin-regular.eot"); /* IE9 Compat Modes */
-  src: local(""),
-    url("../fonts/roboto-v30-latin-regular.eot?#iefix")
-      format("embedded-opentype"),
-    /* IE6-IE8 */ url("../fonts/roboto-v30-latin-regular.woff2")
-      format("woff2"),
-    /* Super Modern Browsers */
-      url("../fonts/roboto-v30-latin-regular.woff") format("woff"),
-    /* Modern Browsers */ url("../fonts/roboto-v30-latin-regular.ttf")
-      format("truetype"),
-    /* Safari, Android, iOS */
-      url("../fonts/roboto-v30-latin-regular.svg#Roboto") format("svg"); /* Legacy iOS */
+:root {
+  --cream: #f3ead7;
+  --cream-soft: #f8f8f8;
+  --charcoal: #201d18;
+  --coral: #e84d2a;
+  --wine: #9f3045;
+  --burgundy: #531d2a;
+  --teal: #0c7893;
+  --teal-deep: #073e4a;
+  --muted: #6d6b69;
+  --line: #201d18;
+  --paper: #fffdf8;
+  --font-sans: "Satoshi", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
-/* roboto-500 - latin */
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/roboto-v30-latin-500.eot"); /* IE9 Compat Modes */
-  src: local(""),
-    url("assets/fonts/roboto-v30-latin-500.eot?#iefix")
-      format("embedded-opentype"),
-    /* IE6-IE8 */ url("../fonts/roboto-v30-latin-500.woff2")
-      format("woff2"),
-    /* Super Modern Browsers */ url("../fonts/roboto-v30-latin-500.woff")
-      format("woff"),
-    /* Modern Browsers */ url("../fonts/roboto-v30-latin-500.ttf")
-      format("truetype"),
-    /* Safari, Android, iOS */
-      url("../fonts/roboto-v30-latin-500.svg#Roboto") format("svg"); /* Legacy iOS */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 body {
-  margin: 0px;
-  padding: 0px;
-  display: block;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(90deg, rgba(32, 29, 24, 0.055) 1px, transparent 1px) 0 0 / 64px 64px,
+    linear-gradient(rgba(32, 29, 24, 0.055) 1px, transparent 1px) 0 0 / 64px 64px,
+    var(--cream);
 }
 
-::-webkit-scrollbar {
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 120;
+  padding: 12px 16px;
+  color: var(--cream);
+  background: var(--charcoal);
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.site-shell {
+  width: min(100%, 1400px);
+  min-height: calc(100vh - 56px);
+  margin: 0 auto;
+  padding: 24px 32px 8px;
+  display: grid;
+  place-items: center;
+}
+
+#OpenSpeedTest-UI {
+  width: min(100%, 1240px);
+  height: min(760px, calc(100vh - 88px));
+  min-height: 580px;
+  border: 0;
+  visibility: hidden;
+}
+
+.openSpeedtestApp {
   display: none;
+  width: min(100%, 1240px);
+  height: min(760px, calc(100vh - 88px));
+  min-height: 580px;
+  overflow: visible;
+  font-family: var(--font-sans);
 }
-html {
-  -ms-overflow-style: none; 
-  scrollbar-width: none;
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--cream);
+  color: var(--charcoal);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
- 
-.Credits {
-color: rgb(125 119 119);
-text-align: center;
-font-size:14px;
-font-family: Roboto-Medium, Roboto;
-font-weight: 500;
-} 
-.Credits a {
-  text-decoration: none;
-  color: rgb(113, 113, 113);
+
+.loader-mark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--charcoal);
+  background: var(--charcoal);
+  color: var(--cream);
+  box-shadow: 5px 5px 0 var(--coral);
+  font-size: 24px;
+  font-weight: 900;
 }
-.Credits a:hover {
-color: #14b0fe;
+
+.loader-copy::after {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  margin-left: 10px;
+  background: var(--coral);
+  vertical-align: middle;
+  animation: loader-pulse 1s steps(3, end) infinite;
+}
+
+@keyframes loader-pulse {
+  50% { width: 4px; }
+}
+
+.site-footer {
+  width: min(calc(100% - 40px), 1200px);
+  min-height: 48px;
+  margin: 0 auto;
+  padding: 12px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid rgba(32, 29, 24, 0.35);
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-footer span:first-child {
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+  font-weight: 900;
+}
+
+.noscript-card {
+  max-width: 480px;
+  padding: 24px;
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--charcoal);
+  background: var(--cream);
+  box-shadow: 6px 6px 0 var(--coral);
+}
+
+/* SVG surface */
+.app-frame {
+  fill: var(--cream);
+  stroke: var(--charcoal);
+  stroke-width: 1;
+}
+
+.surface {
+  fill: var(--paper);
+  stroke: var(--charcoal);
+  stroke-width: 1;
+}
+
+.surface-accent {
+  fill: var(--coral);
+  stroke: var(--charcoal);
+  stroke-width: 1;
+}
+
+.surface-dark {
+  fill: var(--charcoal);
+  stroke: var(--charcoal);
+  stroke-width: 1;
+}
+
+.coral-shadow {
+  fill: var(--coral);
+}
+
+.wine-block {
+  fill: var(--wine);
+}
+
+.teal-block {
+  fill: var(--teal);
+}
+
+.brand-kicker,
+.eyebrow,
+.metric-label,
+.node-label,
+.micro-copy,
+.button-label,
+.theme-label {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.brand-kicker {
+  fill: var(--coral);
+  font-size: 13px;
+}
+
+.brand-name {
+  fill: var(--charcoal);
+  font-family: var(--font-sans);
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.brand-name-inverse {
+  fill: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.hero-title {
+  fill: var(--charcoal);
+  font-family: var(--font-sans);
+  font-size: 68px;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+}
+
+.hero-copy {
+  fill: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.eyebrow,
+.metric-label,
+.node-label,
+.micro-copy,
+.theme-label {
+  fill: var(--muted);
+  font-size: 10px;
+}
+
+.metric-label-dark {
+  fill: rgba(243, 234, 215, 0.72);
+}
+
+.metric-number {
+  fill: var(--charcoal);
+  font-family: var(--font-sans);
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.metric-unit {
+  fill: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.readout-value {
+  fill: var(--charcoal);
+  font-family: var(--font-sans);
+  font-size: 62px;
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  text-anchor: middle;
+}
+
+.readout-status {
+  fill: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+.top-speed {
+  fill: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.button-label {
+  fill: var(--cream);
+  font-size: 15px;
+  font-weight: 900;
+  text-anchor: middle;
+}
+
+.button-subtitle {
+  fill: rgba(243, 234, 215, 0.7);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 8px;
+  text-anchor: middle;
+}
+
+.startButton,
+.Startsettings,
+.theme-toggle,
+.reset-control {
+  cursor: pointer;
+  outline: none;
+}
+
+.startButton .button-base {
+  fill: var(--charcoal);
+  stroke: var(--charcoal);
+  stroke-width: 1;
+  transition: transform 140ms ease;
+}
+
+.startButton .button-depth {
+  fill: var(--coral);
+}
+
+.startButton:hover .button-base,
+.startButton:focus .button-base {
+  transform: translateY(3px);
+}
+
+.Startsettings:hover .node-panel,
+.Startsettings:focus .node-panel,
+.theme-toggle:hover .theme-panel,
+.theme-toggle:focus .theme-panel,
+.reset-control:hover .reset-panel,
+.reset-control:focus .reset-panel {
+  fill: var(--cream);
+  stroke: var(--teal);
+  stroke-width: 2;
+}
+
+.main-Gaugebg {
+  fill: none;
+  stroke: rgba(32, 29, 24, 0.12);
+  stroke-width: 18px;
+  stroke-linecap: butt;
+  stroke-dasharray: 681;
+}
+
+.main-GaugeBlue {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 18px;
+  stroke-linecap: butt;
+  stroke-dasharray: 681;
+  stroke-dashoffset: 681;
+  stroke-opacity: 0;
+}
+
+.main-GaugeWhite {
+  fill: none;
+  stroke: var(--charcoal);
+  stroke-width: 3px;
+  stroke-linecap: butt;
+  stroke-dasharray: 2 679;
+  stroke-opacity: 0;
+}
+
+.meter-label {
+  fill: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 8px;
+}
+
+.progress-track {
+  fill: none;
+  stroke: rgba(32, 29, 24, 0.13);
+  stroke-width: 5px;
+  stroke-linecap: butt;
+}
+
+.intro-Progress {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 5px;
+  stroke-linecap: butt;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+}
+
+.graph-grid {
+  fill: none;
+  stroke: rgba(32, 29, 24, 0.12);
+  stroke-width: 0.6;
+}
+
+.line,
+.line2 {
+  fill: rgba(12, 120, 147, 0.17);
+  stroke: var(--teal);
+  stroke-width: 1.4;
+  stroke-linejoin: miter;
+}
+
+.line2 {
+  fill: rgba(159, 48, 69, 0.15);
+  stroke: var(--wine);
+}
+
+.Symbol,
+.direction-icon {
+  fill: var(--coral);
+  stroke: none;
 }
 
 .ConnectError {
   display: none;
-
+  fill: var(--coral);
 }
 
-.openSpeedtestApp {
- 
-  height: 100vh;
-  width: 100vw;
-  display: none;
-  overflow: hidden;
-}
-.main-Gaugebg {
-  fill: none;
-  stroke: rgb(231, 231, 232);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 22px;
-  stroke-dasharray: 681;
-}
-.main-GaugeBlue {
-  fill: none;
-  stroke: url(#gradient);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 22px;
-  stroke-dasharray: 681;
-  stroke-opacity: 0;
-}
-.main-GaugeWhite {
-  fill: none;
-  stroke: rgb(255, 255, 255);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 15px;
-  stroke-dasharray: 0, 681;
-  stroke-dashoffset: 1;
-  stroke-opacity: 0;
-}
-.oDo-Meter {
-  font-size: 16.633283615112305px;
-  fill: gray;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-}
-.oDoLive-Speed {
-  font-size: 28px;
-  fill: #201e1e;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
-}
-
-.oDoLive-Status {
-  font-size: 10px;
-  fill: #d2d1d2;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
-}
-.uiBg {
-  fill: #d2d1d2;
-}
-.progressbg {
-  stroke: rgb(231, 231, 232);
-  stroke-width: 8px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 400;
-  stroke-dashoffset: 0;
-}
-.Cards {
-  fill: #f2f2f2;
-}
-.Symbol {
-  fill: url(#gradient);
-}
-.rtext {
-  font-size: 12px;
-  fill: #333;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-}
-.rtextnum {
-  font-size: 23px;
-  fill: #201e1e;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
-}
-.rtextmbms {
-  font-size: 12px;
-  fill: #5f5f5f;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
-}
-.jitter-Mob {
-  font-size: 9px;
-  fill: #5f5f5f;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
-}
-.startButton {
-  fill: url(#RadialGradient1);
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-  pointer-events: visible;
-}
-.buttonTxt {
-  font-size: 40px;
-  fill: #ffffff;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
-}
-
-.intro-Progress {
-  stroke: #56c4fb;
-  stroke-width: 8px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 400;
-  stroke-dashoffset: 0;
-}
-.progressElmstart {
-  stroke: #56c4fb;
-  stroke-width: 8px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 400;
-  stroke-dashoffset: 0;
-  display: block;
-}
-.Startsettings {
-  fill: url(#RadialGradient1);
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-  pointer-events: visible;
-  opacity: 0.1;
-  transition: opacity 1s ease-in-out;
-}
-.Startsettings:hover {
-  opacity: 1;
-}
-
-.progressbg {
-  stroke: rgb(231, 231, 232);
-  stroke-width: 8px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 400;
-  stroke-dashoffset: 0;
-}
-.deskStart {
-  fill: none;
-  stroke: rgb(231, 231, 232);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 22px;
-  stroke-dasharray: 681;
-  stroke: url(#gradient);
-}
-#UI-Desk {
+#downSymbolDesk,
+#upSymbolDesk,
+#downSymbolMob,
+#upSymbolMob,
+#graphMob1,
+#graphMob2 {
   display: none;
 }
+
+#UI-Desk,
 #UI-Mob {
   display: none;
 }
-.oDoTop-Speed {
-  font-size: 16.96px;
-  fill: gray;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: end;
-}
-#upSymbolDesk {
-  fill: #14b0fe;
-  display: none;
-}
-#downSymbolDesk {
-  fill: #14b0fe;
-  display: none;
-}
-#upSymbolMob {
-  fill: #14b0fe;
-  display: none;
-}
-#downSymbolMob {
-  fill: #14b0fe;
-  display: none;
-}
 
+#ipDesk,
 #ipMob {
-  font-size: 15px;
-  fill: #201e1e;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
-  display: none;
-}
-#ipDesk {
-  font-size: 15px;
-  fill: #201e1e;
-  font-family: Roboto-Medium, Roboto;
-  font-weight: 500;
-  text-anchor: middle;
   display: none;
 }
 
-.spinner {
-  position: absolute;
-  z-index: 999;
-  top: 50vh;
-  left: 50vw;
-  text-align: center;
-}
-
-.spinner > div {
-  width: 20px;
-  height: 20px;
-  background-color: #2196f3;
-
-  border-radius: 100%;
-  display: inline-block;
-  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-}
-
-.spinner .bounce1 {
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
-}
-
-.spinner .bounce2 {
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
-}
-
-@-webkit-keyframes sk-bouncedelay {
-  0%,
-  80%,
-  100% {
-    -webkit-transform: scale(0);
-  }
-  40% {
-    -webkit-transform: scale(1);
-  }
-}
-
-@keyframes sk-bouncedelay {
-  0%,
-  80%,
-  100% {
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  }
-  40% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
+.Your-IP {
+  fill: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
 }
 
 .darkmode {
-  margin-bottom: -15px;
-  fill: #75757a99;
-  padding-top: 16px;
+  fill: var(--charcoal);
+}
+
+.Mobile {
   display: none;
-  cursor: pointer;
-  margin-right: 30px;
-}
-#daymode {
-  margin-right: 40px;
-}
-.darkmode:hover {
-  fill: #000000;
 }
 
-.Mobile,
 .Desktop {
-  visibility: hidden;
-  width: 100vw;
-  height: 100vh;
+  display: block;
 }
 
-@media only screen and (orientation: landscape) {
-  .Mobile {
-    visibility: hidden;
+@media (max-width: 760px) {
+  body {
+    background-size: 40px 40px;
   }
-  .Desktop {
-    visibility: visible;
-  }
-}
 
-@media only screen and (orientation: portrait) {
-  .spinner {
-    top: 42vh;
-    left: 42vw;
+  .site-shell {
+    min-height: calc(100vh - 44px);
+    padding: 8px 12px 0;
   }
-  .Mobile {
-    visibility: visible;
+
+  #OpenSpeedTest-UI,
+  .openSpeedtestApp {
+    width: 100%;
+    height: min(820px, calc(100vh - 52px));
+    min-height: 620px;
   }
+
   .Desktop {
-    visibility: hidden;
-  }
-}
-@media only screen and (max-width: 300px) {
-  .Credits{
     display: none;
+  }
+
+  .Mobile {
+    display: block;
+  }
+
+  .site-footer {
+    width: calc(100% - 32px);
+    min-height: 40px;
+    padding: 10px 0;
+    font-size: 8px;
+  }
+
+  .site-footer span:nth-child(2) {
+    display: none;
+  }
+
+  .loader {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

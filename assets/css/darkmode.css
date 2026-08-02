@@ -1,45 +1,53 @@
-body {
-  background-color: #181818;
-}
-#ipDesk {
-  fill: aliceblue;
+:root {
+  --cream: #201d18;
+  --cream-soft: #2b2721;
+  --charcoal: #f3ead7;
+  --coral: #e84d2a;
+  --wine: #f4cbc2;
+  --burgundy: #9f3045;
+  --teal: #74c8d7;
+  --teal-deep: #d8eef0;
+  --muted: #b8afa0;
+  --line: #f3ead7;
+  --paper: #29251f;
 }
 
-.oDoLive-Speed {
-  fill: #ffffff;
+html,
+body {
+  background-color: var(--cream);
+  color: var(--charcoal);
 }
-.oDoLive-Status {
-  fill: aliceblue;
+
+body {
+  background:
+    linear-gradient(90deg, rgba(243, 234, 215, 0.06) 1px, transparent 1px) 0 0 / 64px 64px,
+    linear-gradient(rgba(243, 234, 215, 0.06) 1px, transparent 1px) 0 0 / 64px 64px,
+    var(--cream);
 }
-#ipMob {
-  fill: aliceblue;
+
+.loader {
+  background: var(--cream);
 }
-.rtextnum {
-  fill: #ffffff;
+
+.loader-mark {
+  background: var(--charcoal);
+  color: var(--cream);
+  border-color: var(--charcoal);
 }
-.rtextmbms {
-  fill: #ffffff;
-}
-.rtext {
-  fill: #ffffff;
-}
-.Cards {
-  fill: #000000;
+
+.site-footer {
+  border-color: rgba(243, 234, 215, 0.28);
 }
 
 .main-Gaugebg {
-  stroke: #000000;
-}
-.uiBg {
-  fill: #000000;
-}
-.progressbg {
-  stroke: #202020;
-}
-.jitter-Mob {
-  fill: #ffffff;
+  stroke: rgba(243, 234, 215, 0.13);
 }
 
-.ConnectError {
-  fill: #ffffff;
+.progress-track,
+.graph-grid {
+  stroke: rgba(243, 234, 215, 0.13);
+}
+
+.metric-label-dark {
+  fill: rgba(32, 29, 24, 0.72);
 }
