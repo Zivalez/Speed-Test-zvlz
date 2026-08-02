@@ -1,22 +1,91 @@
-# ZVLZ Tokyo Network Test
+# ZVLZ Network Test
 
-A private, self-hosted browser benchmark for the ZVLZ Tokyo node. It measures HTTP download throughput, upload throughput, best-case latency, and jitter without accounts or automatic result storage.
+A single self-hosted network diagnostics project with two separate browser tests:
 
-The measurement engine is based on OpenSpeedTest 2.5.4. The interface, branding, privacy behavior, and container deployment are customized for ZVLZ Tokyo.
+- **Speed Test** at `/` measures HTTP download, upload, latency, and jitter.
+- **Packet Loss Test** at `/packet-loss/` measures UDP/WebRTC packet loss, directional loss, latency, jitter, and out-of-order delivery.
 
-Interface audio uses the locally vendored UI SFX 0.4.0 runtime with the `studio` pack at full master volume. Sound is optional, persists its on/off preference in the browser, and never uses the hover cue.
+The interface uses the ZVLZ visual system and automatically detects the VPS public IP location when the container starts. The active node panel can show city, region, country, coordinates, timezone, ISP, ASN, and public IP.
 
-Typography uses Satoshi through Fontshare's official webfont API. The bundled Roboto WOFF2 files are registered as a local fallback so mobile devices do not fall back to an unrelated system font if Fontshare is unavailable.
+Motion is reserved for state changes and live measurement feedback. Decorative ambient loops are disabled, micro-feedback stays at 100-200 ms, and `prefers-reduced-motion` replaces moving packets with static metrics and graph updates.
 
-## What it measures
+## Runtime architecture
 
-- Download and upload throughput in Mbps
-- HTTP round-trip latency in milliseconds
-- Jitter derived from consecutive latency samples
-- Live throughput graphs
-- Optional long-running stress tests
+One Docker image runs:
 
-Default profile:
+- Nginx on TCP port `3000` for both web interfaces, speed-test transfers, and WebRTC signaling proxying.
+- The Rust OpenPacketLoss backend internally on TCP port `8080`.
+- Built-in STUN on UDP port `3478`.
+- WebRTC media on UDP ports `40000-40050`.
+
+The packet-loss server public NAT address is populated from the same public-IP lookup used for node metadata. No database or persistent volume is required.
+
+## Deploy with Dokploy
+
+Use **Docker Compose**, not a Dockerfile-only application. Packet loss requires published UDP ports, which an HTTP domain route alone cannot provide.
+
+1. Push this complete directory to your GitHub repository.
+2. In Dokploy, create a **Compose** project from that repository.
+3. Select `compose.yml` as the Compose file.
+4. Add your domain to service `zvlz-network-test`, container port `3000`, and enable HTTPS.
+5. Deploy.
+6. In the VPS/provider firewall, allow inbound:
+   - `3478/UDP`
+   - `40000-40050/UDP`
+7. The web domain only needs normal HTTPS access through Dokploy/Traefik.
+
+The health endpoint is `/health`. It checks the packet-loss backend through Nginx, so a failed WebRTC backend also makes the container unhealthy.
+
+### Important port note
+
+The UDP ports must be reachable directly on the VPS public IP. Do not put UDP `3478` or `40000-40050` behind a normal HTTP reverse proxy. If the test domain uses Cloudflare, set that DNS record to **DNS only / grey cloud** so its hostname resolves to the VPS instead of a Cloudflare edge. If the website loads but packet loss reports an ICE connection failure, closed/missing UDP ports or an incorrect public NAT IP are the most likely cause.
+
+## Automatic node location
+
+At each container start, `docker/zvlz-entrypoint.sh` calls `https://ipwho.is/` once from the VPS. The response is written to `/node-info.json` and the public IP is supplied to the WebRTC backend as `NAT_1TO1_IP`.
+
+IP geolocation is approximate. Country is usually reliable; city and region can reflect the provider's registered network location instead of the exact data center. Any field can be corrected through Dokploy environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `NODE_GEO_AUTO_DETECT` | Set to `false` to disable the lookup. |
+| `NODE_GEO_API` | Override the GeoIP base endpoint; default is `https://ipwho.is`. |
+| `NODE_PUBLIC_IP` | Override the detected public IP and WebRTC NAT address. |
+| `NAT_1TO1_IP` | Override only the WebRTC public NAT address. |
+| `NODE_CITY` | Override city. |
+| `NODE_REGION` | Override region/state/prefecture. |
+| `NODE_COUNTRY` | Override country. |
+| `NODE_COUNTRY_CODE` | Override two-letter country code. |
+| `NODE_LATITUDE` | Override latitude. |
+| `NODE_LONGITUDE` | Override longitude. |
+| `NODE_TIMEZONE` | Override timezone, for example `Asia/Tokyo`. |
+| `NODE_ISP` | Override provider/ISP label. |
+| `NODE_ORG` | Override network organization. |
+| `NODE_ASN` | Override ASN. |
+| `NODE_HIDE_IP` | Set to `true` to show `HIDDEN` instead of the public IP in the UI. |
+
+Example manual correction for Tokyo:
+
+```yaml
+environment:
+  NODE_CITY: Tokyo
+  NODE_REGION: Tokyo
+  NODE_COUNTRY: Japan
+  NODE_COUNTRY_CODE: JP
+  NODE_LATITUDE: 35.6762
+  NODE_LONGITUDE: 139.6503
+  NODE_TIMEZONE: Asia/Tokyo
+```
+
+## Run locally
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:3000`. Packet loss also needs UDP ports from `compose.yml`; Docker Desktop networking can behave differently from a Linux VPS, so the production VPS is the authoritative WebRTC test.
+
+## Speed-test profile
 
 - 10 latency samples
 - 12 seconds download
@@ -25,48 +94,12 @@ Default profile:
 - 30 MiB transfer payload
 - 4% browser/protocol overhead compensation
 
-Add `?Clean` to the URL to disable the 4% compensation.
-
-## Deploy with Dokploy
-
-1. Create a new application from this Git repository.
-2. Select **Dockerfile** as the build method.
-3. Set the internal/container port to **3000**.
-4. Attach the desired domain, for example `speedtest.example.com`.
-5. Enable HTTPS on the domain.
-6. Set the health-check path to `/health` if Dokploy asks for one.
-7. Deploy.
-
-No environment variables, volumes, or database are required.
-
-The reverse proxy in front of the container must allow request bodies of at least 35 MiB and timeouts longer than 60 seconds. Avoid response compression, caching, or transformation on `/downloading` and `/upload`.
-
-## Run locally with Docker
-
-```bash
-docker compose up --build -d
-```
-
-Open `http://localhost:3000`.
-
-## URL controls
-
-| URL parameter | Effect |
-|---|---|
-| `?Run` | Start immediately |
-| `?Run=5` | Start after five seconds |
-| `?Test=Download` | Download only |
-| `?Test=Upload` | Upload only |
-| `?Test=Ping` | Latency only |
-| `?XHR=12` | Use 12 parallel streams |
-| `?Ping=30` | Use 30 latency samples |
-| `?Stress=300` | Run each transfer direction for 300 seconds |
-| `?Clean` | Disable overhead compensation |
+Add `?Clean` to disable compensation. Other OpenSpeedTest URL controls such as `?Run`, `?Test=Download`, `?XHR=12`, and `?Stress=300` remain available.
 
 ## Privacy
 
-Results are calculated in the browser and are not stored by default. The customized interface does not link completed results to an external result service. Optional persistence remains disabled through `saveData = false` in `index.html`.
+Results are calculated in the browser and are not persisted by default. The packet-loss page does not redirect or link completed results to an external results service. The startup geolocation request sends the VPS public IP to ipwho.is; it does not send visitor IP addresses or test results.
 
 ## License and attribution
 
-The original OpenSpeedTest measurement engine is distributed under the MIT License. See `License.md`. UI SFX code is MIT licensed and its audio is CC0; the corresponding notices are stored in `assets/vendor`. Copyright and license notices must be retained in redistributed copies.
+The speed engine is based on OpenSpeedTest and the packet-loss engine/frontend are based on OpenPacketLoss; their MIT license notices are retained in `License.md`, `packet-loss/LICENSE`, and `packet-loss-server/LICENSE`. UI SFX code is MIT licensed and its audio is CC0; notices are retained under `assets/vendor`.

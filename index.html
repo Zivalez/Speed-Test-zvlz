@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f3ead7">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="ZVLZ Tokyo is a private, self-hosted network benchmark for download speed, upload speed, latency, and jitter.">
-  <meta property="og:title" content="ZVLZ Tokyo Network Test">
-  <meta property="og:description" content="Measure the route to the ZVLZ Tokyo node from your browser.">
-  <title>ZVLZ Tokyo | Network Test</title>
+  <meta name="description" content="A private ZVLZ self-hosted network benchmark for speed, latency, jitter, and packet loss.">
+  <meta property="og:title" content="ZVLZ Network Test">
+  <meta property="og:description" content="Measure the route to the active ZVLZ node from your browser.">
+  <title>ZVLZ | Network Test</title>
 
   <link rel="preconnect" href="https://api.fontshare.com">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap">
-  <link rel="stylesheet" href="assets/css/app.css?v=5">
+  <link rel="stylesheet" href="assets/css/app.css?v=6">
   <script>
     function getCookieValue(name) {
       const match = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`);
@@ -26,7 +26,7 @@
     ) {
       document.head.insertAdjacentHTML(
         "beforeend",
-        '<link id="darkmode" rel="stylesheet" href="assets/css/darkmode.css?v=5">'
+        '<link id="darkmode" rel="stylesheet" href="assets/css/darkmode.css?v=6">'
       );
     }
   </script>
@@ -40,14 +40,14 @@
   <main id="network-test" class="site-shell">
     <div id="loading_app" class="loader" role="status" aria-live="polite">
       <span class="loader-mark" aria-hidden="true">Z</span>
-      <span class="loader-copy">Preparing Tokyo node</span>
+      <span class="loader-copy">Locating active node</span>
     </div>
 
     <object
       id="OpenSpeedTest-UI"
-      data="assets/images/app.svg?v=5"
+      data="assets/images/app.svg?v=6"
       type="image/svg+xml"
-      aria-label="ZVLZ Tokyo network speed test interface"
+      aria-label="ZVLZ network speed test interface"
     ></object>
 
     <noscript>
@@ -59,15 +59,15 @@
   </main>
 
   <footer class="site-footer">
-    <span>ZVLZ TOKYO</span>
-    <span>Self-hosted HTTP network benchmark</span>
+    <span>ZVLZ <span class="js-node-city">AUTO NODE</span></span>
+    <span><span class="js-node-location">Locating node</span> · Self-hosted network benchmark</span>
   </footer>
 
   <script>
     // Add more endpoints here. The engine selects the node with the lowest latency.
     var openSpeedTestServerList = [
       {
-        ServerName: "ZVLZ Tokyo",
+        ServerName: "ZVLZ Auto Node",
         Download: "downloading",
         Upload: "upload",
         ServerIcon: "DefaultIcon"
@@ -108,13 +108,14 @@
     var enableRun = true;
 
     function ostOnload() {
-      console.info("ZVLZ Tokyo Network Test ready");
+      console.info("ZVLZ Network Test ready");
     }
 
     var openChannel = "dev";
   </script>
-  <script type="module" src="assets/js/sound.js?v=5"></script>
-  <script src="assets/js/app-2.5.4.min.js?v=5"></script>
-  <script src="assets/js/darkmode.js?v=5"></script>
+  <script src="assets/js/node-info.js?v=6"></script>
+  <script type="module" src="assets/js/sound.js?v=6"></script>
+  <script src="assets/js/app-2.5.4.min.js?v=6"></script>
+  <script src="assets/js/darkmode.js?v=6"></script>
 </body>
 </html>

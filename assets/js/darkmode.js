@@ -22,7 +22,7 @@ function setSkin(mode) {
     darkStyle = document.createElement("link");
     darkStyle.id = "darkmode";
     darkStyle.rel = "stylesheet";
-    darkStyle.href = "assets/css/darkmode.css?v=5";
+    darkStyle.href = "assets/css/darkmode.css?v=6";
     document.head.appendChild(darkStyle);
   }
 

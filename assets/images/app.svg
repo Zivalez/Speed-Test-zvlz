@@ -4,9 +4,9 @@
      class="openSpeedtestApp"
      role="img"
      aria-labelledby="appTitle appDescription">
-  <title id="appTitle">ZVLZ Tokyo Network Test</title>
+  <title id="appTitle">ZVLZ Network Test</title>
   <desc id="appDescription">A self-hosted browser benchmark for latency, jitter, download speed, and upload speed.</desc>
-  <text id="text" x="-9999" y="-9999">ZVLZ Tokyo</text>
+  <text id="text" x="-9999" y="-9999">ZVLZ Network</text>
 
   <defs>
     <symbol id="zvlzMark" viewBox="0 0 48 48">
@@ -97,7 +97,7 @@
       <path d="M20.5 15.5A9 9 0 0 1 8.5 3.5a9 9 0 1 0 12 12z" fill="none" stroke="currentColor" stroke-width="2"/>
     </symbol>
     <symbol id="YourIP" viewBox="0 0 360 32">
-      <text id="YourIPText" x="0" y="21" class="Your-IP">NODE / ZVLZ TOKYO / BROWSER → SERVER</text>
+      <text id="YourIPText" x="0" y="21" class="Your-IP">NODE / AUTO DETECT / BROWSER → SERVER</text>
     </symbol>
   </defs>
 
@@ -107,11 +107,11 @@
       <rect x="6" y="6" width="1174" height="650" class="app-frame"/>
 
       <g id="UI-Desk">
-        <g aria-label="ZVLZ Tokyo header">
+        <g aria-label="ZVLZ node header">
           <use href="#zvlzMark" x="40" y="30" width="42" height="42" style="color:var(--cream)"/>
           <text x="96" y="49" class="brand-kicker">ZVLZ NETWORK</text>
-          <text x="96" y="68" class="brand-name" style="font-size:20px">TOKYO</text>
-          <text x="735" y="55" class="node-label">HTTP / 6 STREAMS / TOKYO</text>
+          <text id="nodeCityResultDesk" x="96" y="68" class="brand-name" style="font-size:20px">AUTO NODE</text>
+          <text id="nodeRouteResultDesk" x="735" y="55" class="node-label">HTTP / 6 STREAMS / DETECTING</text>
           <g class="sound-control" onclick="toggleZvlzSound()" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
             <rect x="960" y="29" width="86" height="42" class="sound-panel surface"/>
             <text x="1003" y="55" class="node-label sound-status" text-anchor="middle">SFX ON</text>
@@ -181,7 +181,7 @@
       <g id="intro-Desk">
         <use href="#zvlzMark" x="40" y="30" width="48" height="48" style="color:var(--cream)"/>
         <text x="104" y="51" class="brand-kicker">ZVLZ NETWORK</text>
-        <text x="104" y="73" class="brand-name" style="font-size:24px">TOKYO</text>
+        <text id="nodeCityIntroDesk" x="104" y="73" class="brand-name" style="font-size:24px">AUTO NODE</text>
 
         <g id="nightmode" class="theme-toggle darkmode" onclick="toggleSkin()" tabindex="0" role="button" aria-label="Use dark theme">
           <rect x="1056" y="31" width="86" height="42" class="theme-panel surface"/>
@@ -199,23 +199,24 @@
           <text x="996" y="57" class="node-label sound-status" text-anchor="middle">SFX ON</text>
         </g>
 
-        <text x="64" y="150" class="eyebrow">NETWORK BENCHMARK / 35.6762° N</text>
+        <text id="nodeCoordinatesDesk" x="64" y="150" class="eyebrow">NETWORK BENCHMARK / LOCATING NODE</text>
         <text x="64" y="225" class="hero-title">Measure the route.</text>
         <text x="64" y="292" class="hero-title">Not the promise.</text>
-        <text x="68" y="344" class="hero-copy">A direct browser-to-server benchmark for the ZVLZ Tokyo node.</text>
+        <text id="nodeHeroDesk" x="68" y="344" class="hero-copy">A direct browser-to-server benchmark for this ZVLZ node.</text>
         <text x="68" y="370" class="hero-copy">Latency, jitter, download, and upload in one pass.</text>
 
         <g id="startButtonDesk" class="startButton" tabindex="0" role="button" aria-label="Start network test">
           <rect x="68" y="451" width="286" height="76" class="button-depth"/>
           <rect x="68" y="445" width="286" height="76" class="button-base"/>
-          <text x="211" y="477" class="button-label">START TEST</text>
+          <text x="211" y="477" class="button-label">START SPEED TEST</text>
           <text x="211" y="501" class="button-subtitle">PING · DOWNLOAD · UPLOAD</text>
         </g>
 
-        <g id="settingsDesk" class="Startsettings" tabindex="0" role="button" aria-label="Show node details">
-          <rect x="376" y="445" width="254" height="76" class="node-panel surface"/>
-          <text x="400" y="474" class="node-label">ACTIVE NODE</text>
-          <text x="400" y="501" class="brand-name" style="font-size:18px">TOKYO / HTTP</text>
+        <g id="settingsDesk" class="Startsettings packet-test-button" tabindex="0" role="button" aria-label="Open packet loss test">
+          <rect x="376" y="451" width="254" height="76" class="packet-button-depth"/>
+          <rect x="376" y="445" width="254" height="76" class="packet-button-base"/>
+          <text x="503" y="477" class="packet-button-label" text-anchor="middle">PACKET LOSS TEST</text>
+          <text x="503" y="501" class="packet-button-subtitle" text-anchor="middle">UDP · WEBRTC · JITTER</text>
         </g>
         <g id="ipDesk">
           <use href="#YourIP" x="68" y="540" width="360" height="32"/>
@@ -223,12 +224,12 @@
 
         <rect x="696" y="111" width="446" height="444" class="surface-dark"/>
         <rect x="711" y="126" width="416" height="414" fill="none" stroke="var(--cream)" opacity="0.24"/>
-        <text x="743" y="174" class="metric-label metric-label-dark">TEST SEQUENCE / 001</text>
-        <text x="743" y="241" class="brand-name-inverse" style="font-size:52px">12 SEC</text>
-        <text x="743" y="273" class="hero-copy" style="fill:#b8afa0">for each transfer direction</text>
+        <text x="743" y="174" class="metric-label metric-label-dark">ACTIVE NODE / AUTO DETECTED</text>
+        <text id="nodeLocationDesk" x="743" y="241" class="brand-name-inverse" style="font-size:46px">LOCATING</text>
+        <text id="nodeRegionDesk" x="743" y="273" class="hero-copy" style="fill:#b8afa0">region · country</text>
         <path d="M743 316H1095" stroke="var(--coral)" stroke-width="4"/>
-        <text x="743" y="368" class="brand-name-inverse">6 PARALLEL STREAMS</text>
-        <text x="743" y="399" class="hero-copy" style="fill:#b8afa0">30 MiB random payloads</text>
+        <text id="nodeProviderDesk" x="743" y="368" class="brand-name-inverse">NETWORK PROVIDER</text>
+        <text id="nodeMetaDesk" x="743" y="399" class="hero-copy" style="font-size:9px;fill:#b8afa0">ASN · TIMEZONE · PUBLIC IP</text>
         <rect x="743" y="446" width="110" height="42" class="surface-accent"/>
         <text x="798" y="472" class="node-label" text-anchor="middle" style="fill:var(--charcoal)">HTTP 1.1</text>
         <rect x="869" y="446" width="132" height="42" fill="none" stroke="var(--cream)"/>
@@ -247,7 +248,7 @@
       <g id="UI-Mob">
         <use href="#zvlzMark" x="24" y="22" width="38" height="38" style="color:var(--cream)"/>
         <text x="74" y="39" class="brand-kicker" style="font-size:9px">ZVLZ NETWORK</text>
-        <text x="74" y="56" class="brand-name" style="font-size:18px">TOKYO</text>
+        <text id="nodeCityResultMob" x="74" y="56" class="brand-name" style="font-size:18px">AUTO NODE</text>
         <g class="sound-control" onclick="toggleZvlzSound()" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
           <rect x="242" y="24" width="50" height="36" class="sound-panel surface"/>
           <text x="267" y="46" class="node-label sound-status" text-anchor="middle" style="font-size:7px">SFX ON</text>
@@ -308,7 +309,7 @@
       <g id="intro-Mob">
         <use href="#zvlzMark" x="24" y="22" width="42" height="42" style="color:var(--cream)"/>
         <text x="80" y="42" class="brand-kicker" style="font-size:9px">ZVLZ NETWORK</text>
-        <text x="80" y="60" class="brand-name" style="font-size:19px">TOKYO</text>
+        <text id="nodeCityIntroMob" x="80" y="60" class="brand-name" style="font-size:19px">AUTO NODE</text>
 
         <g id="nightmode-Mob" class="theme-toggle darkmode" onclick="toggleSkin()" tabindex="0" role="button" aria-label="Use dark theme">
           <rect x="300" y="25" width="50" height="38" class="theme-panel surface"/>
@@ -324,30 +325,32 @@
           <text x="267" y="48" class="node-label sound-status" text-anchor="middle" style="font-size:7px">SFX ON</text>
         </g>
 
-        <text x="26" y="124" class="eyebrow" style="font-size:8px">NETWORK BENCHMARK / TOKYO</text>
+        <text id="nodeCoordinatesMob" x="26" y="124" class="eyebrow" style="font-size:8px">NETWORK BENCHMARK / LOCATING NODE</text>
         <text x="26" y="176" class="hero-title" style="font-size:40px">Measure the</text>
         <text x="26" y="220" class="hero-title" style="font-size:40px">route.</text>
         <text x="26" y="264" class="hero-title" style="font-size:38px;fill:var(--coral)">Not the promise.</text>
-        <text x="28" y="302" class="hero-copy" style="font-size:12px">A direct benchmark to the ZVLZ Tokyo node.</text>
+        <text id="nodeHeroMob" x="28" y="302" class="hero-copy" style="font-size:12px">A direct benchmark to this ZVLZ node.</text>
 
         <rect x="25" y="340" width="325" height="146" class="surface-dark"/>
-        <text x="45" y="369" class="metric-label metric-label-dark" style="font-size:8px">TEST PROFILE / 001</text>
-        <text x="45" y="412" class="brand-name-inverse" style="font-size:30px">12 SEC × 2</text>
-        <text x="45" y="441" class="hero-copy" style="font-size:10px;fill:#b8afa0">6 HTTP streams · 30 MiB payload</text>
+        <text x="45" y="369" class="metric-label metric-label-dark" style="font-size:8px">ACTIVE NODE / AUTO DETECTED</text>
+        <text id="nodeLocationMob" x="45" y="412" class="brand-name-inverse" style="font-size:28px">LOCATING</text>
+        <text id="nodeRegionMob" x="45" y="441" class="hero-copy" style="font-size:10px;fill:#b8afa0">region · country</text>
+        <text id="nodeProviderMob" x="45" y="467" class="micro-copy metric-label-dark" style="font-size:7px">network provider · timezone</text>
         <rect x="255" y="363" width="70" height="28" class="surface-accent"/>
         <text x="290" y="381" class="node-label" text-anchor="middle" style="font-size:7px;fill:var(--charcoal)">LIVE NODE</text>
 
         <g id="startButtonMob" class="startButton" tabindex="0" role="button" aria-label="Start network test">
           <rect x="25" y="532" width="325" height="76" class="button-depth"/>
           <rect x="25" y="526" width="325" height="76" class="button-base"/>
-          <text x="187.5" y="558" class="button-label">START TEST</text>
+          <text x="187.5" y="558" class="button-label">START SPEED TEST</text>
           <text x="187.5" y="582" class="button-subtitle">PING · DOWNLOAD · UPLOAD</text>
         </g>
 
-        <g id="settingsMob" class="Startsettings" tabindex="0" role="button" aria-label="Show node details">
-          <rect x="25" y="630" width="325" height="58" class="node-panel surface"/>
-          <text x="45" y="654" class="node-label" style="font-size:8px">ACTIVE NODE</text>
-          <text x="45" y="676" class="brand-name" style="font-size:16px">TOKYO / HTTP</text>
+        <g id="settingsMob" class="Startsettings packet-test-button" tabindex="0" role="button" aria-label="Open packet loss test">
+          <rect x="25" y="636" width="325" height="58" class="packet-button-depth"/>
+          <rect x="25" y="630" width="325" height="58" class="packet-button-base"/>
+          <text x="187.5" y="655" class="packet-button-label" text-anchor="middle" style="font-size:10px">PACKET LOSS TEST</text>
+          <text x="187.5" y="677" class="packet-button-subtitle" text-anchor="middle" style="font-size:7px">UDP · WEBRTC · JITTER</text>
         </g>
         <g id="ipMob">
           <use href="#YourIP" x="25" y="700" width="325" height="28"/>

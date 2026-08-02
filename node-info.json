@@ -1,0 +1,14 @@
+{
+  "city": "Auto Node",
+  "region": "Locating",
+  "country": "Node location",
+  "country_code": "",
+  "latitude": null,
+  "longitude": null,
+  "timezone": "Timezone pending",
+  "isp": "Network provider pending",
+  "org": "",
+  "asn": "",
+  "ip": "Public IP pending",
+  "source": "source fallback"
+}

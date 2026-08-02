@@ -9,6 +9,7 @@
 window.onload = function() {
   var appSVG = document.getElementById("OpenSpeedTest-UI");
   appSVG.parentNode.replaceChild(appSVG.contentDocument.documentElement, appSVG);
+  window.applyZvlzNodeInfo?.();
   ostOnload();
   OpenSpeedTest.Start();
 };
@@ -27,7 +28,7 @@ window.onload = function() {
     this.el = document.getElementById(el);
   }
   _.prototype.fade = function fade(type, ms, callback00) {
-    var isIn = type === "in", duration = ms, self = this;
+    var isIn = type === "in", duration = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? 1 : ms, self = this;
     if (isIn) {
       self.el.style.display = "block";
       self.el.style.opacity = 0;
@@ -139,28 +140,28 @@ window.onload = function() {
     }
   };
   openSpeedtestShow.prototype.prePing = function() {
-    this.loader.fade("out", 500);
-    this.OpenSpeedtest.fade("in", 1000);
+    this.loader.fade("out", 150);
+    this.OpenSpeedtest.fade("in", 250);
   };
   openSpeedtestShow.prototype.app = function() {
     var Self = this;
-    this.loader.fade("out", 300, function() {
+    this.loader.fade("out", 150, function() {
       Self.ShowAppIntro();
     });
   };
   openSpeedtestShow.prototype.ShowAppIntro = function() {
-    this.OpenSpeedtest.fade("in", 1000);
+    this.OpenSpeedtest.fade("in", 250);
   };
   openSpeedtestShow.prototype.userInterface = function() {
     var Self = this;
-    this.intro_Desk.fade("out", 350);
-    this.intro_Mob.fade("out", 350, function() {
+    this.intro_Desk.fade("out", 180);
+    this.intro_Mob.fade("out", 180, function() {
       Self.ShowUI();
     });
   };
   openSpeedtestShow.prototype.ShowUI = function() {
-    this.UI_Desk.fade("in", 1000);
-    this.UI_Mob.fade("in", 1000, uiLoaded);
+    this.UI_Desk.fade("in", 260);
+    this.UI_Mob.fade("in", 260, uiLoaded);
     function uiLoaded(argument) {
       Status = "Loaded";
       console.log("ZVLZ Tokyo interface ready");
@@ -604,8 +605,8 @@ window.onload = function() {
     setFinal();
     var launch = true;
     var init = true;
-    Get.addEvt(Show.settingsMob.el, "click", ShowIP);
-    Get.addEvt(Show.settingsDesk.el, "click", ShowIP);
+    Get.addEvt(Show.settingsMob.el, "click", OpenPacketLoss);
+    Get.addEvt(Show.settingsDesk.el, "click", OpenPacketLoss);
     Get.addEvt(Show.startButtonDesk.el, "click", runTasks);
     Get.addEvt(Show.startButtonMob.el, "click", runTasks);
     Get.addEvt(document, "keypress", hiEnter);
@@ -815,8 +816,8 @@ window.onload = function() {
     }
     var Startit = 0;
     function removeEvts() {
-      Get.remEvt(Show.settingsMob.el, "click", ShowIP);
-      Get.remEvt(Show.settingsDesk.el, "click", ShowIP);
+      Get.remEvt(Show.settingsMob.el, "click", OpenPacketLoss);
+      Get.remEvt(Show.settingsDesk.el, "click", OpenPacketLoss);
       Get.remEvt(Show.startButtonDesk.el, "click", runTasks);
       Get.remEvt(Show.startButtonMob.el, "click", runTasks);
       Get.remEvt(document, "keypress", hiEnter);
@@ -831,6 +832,13 @@ window.onload = function() {
       var willOpen = Show.ipDesk.el.style.display !== "block";
       Show.ip();
       window.zvlzSfx?.play(willOpen ? "open" : "close");
+    }
+    function OpenPacketLoss() {
+      if (typeof window.zvlzOpenPacketLoss === "function") {
+        window.zvlzOpenPacketLoss();
+      } else {
+        window.location.assign("/packet-loss/");
+      }
     }
     function runTasks() {
       if (addEvent) {

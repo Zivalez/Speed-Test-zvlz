@@ -119,6 +119,12 @@ window.zvlzRestartTest = function zvlzRestartTest() {
   window.setTimeout(() => window.location.assign(`${window.location.pathname}?run=0`), 220);
 };
 
+window.zvlzOpenPacketLoss = function zvlzOpenPacketLoss() {
+  stopLoop();
+  play("select");
+  window.setTimeout(() => window.location.assign("/packet-loss/"), 180);
+};
+
 document.addEventListener("pointerdown", unlockSound, { capture: true });
 document.addEventListener("keydown", (event) => {
   if (event.key === "Enter" || event.key === " ") unlockSound();

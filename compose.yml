@@ -1,6 +1,17 @@
 services:
-  zvlz-tokyo-speedtest:
+  zvlz-network-test:
     build: .
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3000:3000/tcp"
+      - "3478:3478/udp"
+      - "40000-40050:40000-40050/udp"
+    environment:
+      PLATFORM_MODE: self
+      PORT: 8080
+      STUN_PORT: 3478
+      STUN_URL: auto
+      ICE_PORT_MIN: 40000
+      ICE_PORT_MAX: 40050
+      NODE_GEO_AUTO_DETECT: "true"
+      NODE_GEO_API: https://ipwho.is

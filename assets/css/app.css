@@ -149,7 +149,7 @@ a {
   margin-left: 10px;
   background: var(--coral);
   vertical-align: middle;
-  animation: loader-pulse 1s steps(3, end) infinite;
+  animation: loader-pulse 900ms steps(3, end) 3;
 }
 
 @keyframes loader-pulse {
@@ -350,7 +350,7 @@ a {
   fill: var(--charcoal);
   stroke: var(--charcoal);
   stroke-width: 1;
-  transition: transform 140ms ease;
+  transition: fill 100ms cubic-bezier(0.2, 0, 0, 1), stroke 100ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .startButton .button-depth {
@@ -359,7 +359,39 @@ a {
 
 .startButton:hover .button-base,
 .startButton:focus .button-base {
-  transform: translateY(3px);
+  fill: var(--secondary-deep);
+  stroke: var(--secondary-deep);
+}
+
+.packet-test-button .packet-button-base {
+  fill: #9f3045;
+  stroke: var(--charcoal);
+  stroke-width: 1;
+  transition: fill 100ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.packet-test-button .packet-button-depth {
+  fill: var(--coral);
+}
+
+.packet-button-label {
+  fill: #fffdf8;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.packet-button-subtitle {
+  fill: rgba(255, 253, 248, 0.72);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 7px;
+  letter-spacing: 0.08em;
+}
+
+.packet-test-button:hover .packet-button-base,
+.packet-test-button:focus .packet-button-base {
+  fill: #531d2a;
 }
 
 .Startsettings:hover .node-panel,
@@ -592,5 +624,9 @@ a {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .loader-copy::after {
+    animation: none !important;
   }
 }
