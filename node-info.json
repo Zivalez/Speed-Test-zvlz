@@ -10,5 +10,11 @@
   "org": "",
   "asn": "",
   "ip": "Public IP pending",
-  "source": "source fallback"
+  "source": "source fallback",
+  "webrtc": {
+    "host": "",
+    "stun_port": 3478,
+    "ice_port_min": 40000,
+    "ice_port_max": 40050
+  }
 }

@@ -58,6 +58,11 @@ if [ -z "${NAT_1TO1_IP:-}" ] && [ "$public_ip" != "Public IP unknown" ]; then
   export NAT_1TO1_IP="$public_ip"
 fi
 
+webrtc_host="${NAT_1TO1_IP:-$public_ip}"
+stun_port="${STUN_PORT:-3478}"
+ice_port_min="${ICE_PORT_MIN:-40000}"
+ice_port_max="${ICE_PORT_MAX:-40050}"
+
 if [ "${NODE_HIDE_IP:-false}" = "true" ]; then
   display_ip="HIDDEN"
 else
@@ -77,6 +82,10 @@ jq -n \
   --arg asn "$asn" \
   --arg ip "$display_ip" \
   --arg source "$source" \
+  --arg webrtc_host "$webrtc_host" \
+  --arg stun_port "$stun_port" \
+  --arg ice_port_min "$ice_port_min" \
+  --arg ice_port_max "$ice_port_max" \
   '{
     city: $city,
     region: $region,
@@ -89,7 +98,13 @@ jq -n \
     org: $org,
     asn: (if $asn == "" then "" elif ($asn | startswith("AS")) then $asn else "AS" + $asn end),
     ip: $ip,
-    source: $source
+    source: $source,
+    webrtc: {
+      host: $webrtc_host,
+      stun_port: ($stun_port | tonumber? // 3478),
+      ice_port_min: ($ice_port_min | tonumber? // 40000),
+      ice_port_max: ($ice_port_max | tonumber? // 40050)
+    }
   }' > "$html_root/node-info.json.tmp"
 mv "$html_root/node-info.json.tmp" "$html_root/node-info.json"
 

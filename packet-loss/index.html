@@ -12,9 +12,6 @@
     <!-- Preload Fonts -->
 
 
-    <link rel="preconnect" href="https://api.fontshare.com">
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap">
     <!-- Local fallback fonts -->
     <link rel="stylesheet" href="fonts.min.css?v=1776935747193">
     <!-- External CSS -->
@@ -62,7 +59,7 @@
             --glow-loss: none;
         }
     </style>
-    <link rel="stylesheet" href="zvlz.css?v=1">
+    <link rel="stylesheet" href="zvlz.css?v=2">
     <script>
         (function () {
             // Theme Detection: URL > Cookie > System
@@ -183,13 +180,21 @@
             <!-- Start Card Overlay -->
             <div id="start-overlay" class="start-overlay">
                 <div class="start-card">
-                    <button id="theme-btn" class="theme-toggle" title="Toggle Theme">Dark</button>
-                    <button id="btn-test" class="test-button">
-                        TEST PACKET LOSS
-                    </button>
-                    <button id="btn-settings" class="settings-button" title="Settings">
-                        Settings
-                    </button>
+                    <div class="start-card-heading">
+                        <span class="start-card-code">ZVLZ / UDP DIAGNOSTIC</span>
+                        <div id="packet-health" class="packet-health" data-state="checking">
+                            <span aria-hidden="true"></span><strong>CHECKING SIGNALING</strong>
+                        </div>
+                    </div>
+                    <div class="start-card-copy">
+                        <h1>PACKET PATH TEST</h1>
+                        <p>Measure loss, delivery order, latency, and jitter over a direct WebRTC UDP channel.</p>
+                    </div>
+                    <div class="start-card-actions">
+                        <button id="btn-test" class="test-button">START PACKET TEST</button>
+                        <button id="btn-settings" class="settings-button" title="Configure packet test">CONFIGURE</button>
+                        <button id="theme-btn" class="theme-toggle" title="Toggle theme">DARK MODE</button>
+                    </div>
                 </div>
             </div>
 
@@ -201,10 +206,10 @@
 
             <!-- Settings Modal -->
             <div id="settings-modal" class="modal">
-                <div class="modal-content">
+                <div class="modal-content t-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
                     <div class="modal-header">
-                        <h2>Test Settings</h2>
-                        <button id="close-settings" class="close-button">✕</button>
+                        <div><span>TEST PROFILE / UDP</span><h2 id="settings-title">PACKET TEST SETTINGS</h2></div>
+                        <button id="close-settings" class="close-button" aria-label="Close settings">CLOSE</button>
                     </div>
                     <div class="modal-body">
                         <!-- Quick Presets -->
@@ -259,7 +264,7 @@
                                     <span>Cumulative (all data)</span>
                                 </label>
                             </div>
-                            <small style="opacity: 0.7; font-size: 11px; display: block; margin-top: 4px;">
+                            <small class="setting-help">
                                 Real-time mode shows loss for last 10 seconds only - ideal for debugging hardware changes
                             </small>
                         </div>
@@ -271,23 +276,23 @@
                                 <label class="setting-label">Packet Interval (ms)</label>
                                 <input type="number" id="packet-interval" value="15.625" min="1" max="1000" step="0.001"
                                     class="number-input">
-                                <div style="margin-top: 8px;">
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" id="auto-interval" checked style="cursor: pointer;">
+                                <div class="check-row">
+                                    <label class="check-label">
+                                        <input type="checkbox" id="auto-interval" checked>
                                         <span style="font-size: 13px;">Auto</span>
                                     </label>
                                 </div>
-                                <div style="margin-top: 8px;">
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" id="show-network-metrics" style="cursor: pointer;">
+                                <div class="check-row">
+                                    <label class="check-label">
+                                        <input type="checkbox" id="show-network-metrics">
                                         <span style="font-size: 13px;">Show Network Metrics</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="setting-group">
                                 <label class="setting-label">Calculated Packet Count</label>
-                                <p id="packet-count-display" style="font-size: 14px; color: var(--primary-color); margin: 0; padding: 8px 0;">1920 packets</p>
-                                <small style="opacity: 0.7; font-size: 11px; display: block; margin-top: 4px;">
+                                <p id="packet-count-display" class="calculated-value">1920 packets</p>
+                                <small class="setting-help">
                                     Auto-calculated based on duration and interval
                                 </small>
                             </div>
@@ -295,21 +300,19 @@
                                 <label class="setting-label">Packet Size (bytes) - MTU Testing</label>
                                 <input type="number" id="packet-size" value="100" min="50" max="9000" step="50"
                                     class="number-input">
-                                <div class="preset-buttons gap-small" style="margin-top: 8px;">
+                                <div class="preset-buttons gap-small size-presets">
                                     <button class="size-preset-btn" data-size="100">Small (100B)</button>
                                     <button class="size-preset-btn" data-size="576">IPv4 (576B)</button>
                                     <button class="size-preset-btn" data-size="1500">Ethernet (1500B)</button>
                                     <button class="size-preset-btn" data-size="9000">Jumbo (9000B)</button>
                                 </div>
-                                <small style="opacity: 0.7; font-size: 11px; display: block; margin-top: 4px;">
+                                <small class="setting-help">
                                     Large packets may require longer intervals
                                 </small>
                             </div>
-                            <div
-                                style="text-align: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
-                                <button id="reset-settings"
-                                    style="font-size: 12px; padding: 6px 16px; cursor: pointer; transition: all 0.2s;">
-                                    Reset to Defaults
+                            <div class="reset-setting-row">
+                                <button id="reset-settings">
+                                    RESET TO DEFAULTS
                                 </button>
                             </div>
                         </details>
@@ -328,10 +331,10 @@
     </footer>
 
     <!-- External JavaScript Modules -->
-    <script src="/assets/js/node-info.js?v=6"></script>
+    <script src="/assets/js/node-info.js?v=7"></script>
     <script type="module" src="/assets/js/sound.js?v=6"></script>
-    <script type="module" src="packet-shell.js?v=1"></script>
-    <script type="module" src="bundle.min.js?v=1"></script>
+    <script type="module" src="packet-shell.js?v=2"></script>
+    <script type="module" src="bundle.min.js?v=2"></script>
 </body>
 
 </html>

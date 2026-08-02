@@ -28,3 +28,20 @@ window.addEventListener("load", () => {
 
 document.addEventListener("zvlz:packet-completed", () => window.zvlzSfx?.complete());
 document.addEventListener("zvlz:packet-error", () => window.zvlzSfx?.fail());
+
+async function updatePacketHealth() {
+  const badge = document.getElementById("packet-health");
+  if (!badge) return;
+  try {
+    const response = await fetch("/health", { cache: "no-store" });
+    const health = response.ok ? await response.json() : null;
+    if (!response.ok || health?.status !== "healthy") throw new Error("unhealthy");
+    badge.dataset.state = "ready";
+    badge.querySelector("strong").textContent = "SIGNALING READY";
+  } catch (_error) {
+    badge.dataset.state = "offline";
+    badge.querySelector("strong").textContent = "SIGNALING OFFLINE";
+  }
+}
+
+window.addEventListener("load", updatePacketHealth);

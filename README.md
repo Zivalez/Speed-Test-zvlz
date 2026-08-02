@@ -7,7 +7,9 @@ A single self-hosted network diagnostics project with two separate browser tests
 
 The interface uses the ZVLZ visual system and automatically detects the VPS public IP location when the container starts. The active node panel can show city, region, country, coordinates, timezone, ISP, ASN, and public IP.
 
-Motion is reserved for state changes and live measurement feedback. Decorative ambient loops are disabled, micro-feedback stays at 100-200 ms, and `prefers-reduced-motion` replaces moving packets with static metrics and graph updates.
+The landing surface is a small React/TypeScript island built from `ui/`. It uses `@splinetool/react-spline` for the supplied scene on capable desktop browsers and keeps a static ASCII fallback for mobile, reduced-motion mode, slow loading, or scene failure. The initial hero bundle is separate from the speed engine, and the heavier Spline runtime is lazy-loaded only when needed.
+
+Motion patterns are adapted from transitions.dev: staggered hero text, scale/fade modal states, text-state swaps, and vertical spinning result reels. Every custom transition has a `prefers-reduced-motion` fallback.
 
 ## Runtime architecture
 
@@ -38,7 +40,9 @@ The health endpoint is `/health`. It checks the packet-loss backend through Ngin
 
 ### Important port note
 
-The UDP ports must be reachable directly on the VPS public IP. Do not put UDP `3478` or `40000-40050` behind a normal HTTP reverse proxy. If the test domain uses Cloudflare, set that DNS record to **DNS only / grey cloud** so its hostname resolves to the VPS instead of a Cloudflare edge. If the website loads but packet loss reports an ICE connection failure, closed/missing UDP ports or an incorrect public NAT IP are the most likely cause.
+The UDP ports must be reachable directly on the VPS public IP. Do not put UDP `3478` or `40000-40050` behind a normal HTTP reverse proxy. The browser reads the detected public IPv4 from `/node-info.json` for STUN, so an HTTP CDN/proxy can still serve the page; Cloudflare does not proxy these UDP ports. If public-IP detection fails, set `NODE_PUBLIC_IP` explicitly. If the page loads but the UI reports `UDP Path Unreachable`, closed/missing UDP ports, Dockerfile-only deployment, or an incorrect public NAT IP are the most likely causes.
+
+The packet page checks `/health` before creating an offer. `Signaling Service Unavailable` means the internal Rust backend or Nginx proxy failed; `UDP Path Unreachable` means HTTP signaling worked but ICE could not establish the direct UDP channel.
 
 ## Automatic node location
 
@@ -84,6 +88,18 @@ docker compose up --build
 ```
 
 Open `http://localhost:3000`. Packet loss also needs UDP ports from `compose.yml`; Docker Desktop networking can behave differently from a Linux VPS, so the production VPS is the authoritative WebRTC test.
+
+## Frontend build
+
+The Docker build compiles the React hero automatically. To rebuild only that hero while developing:
+
+```bash
+cd ui
+npm ci
+npm run build
+```
+
+The Spline scene is loaded from `https://prod.spline.design/leR0WNBjCThoufYU/scene.splinecode`. The custom error boundary keeps the ASCII hero available if that remote scene cannot load.
 
 ## Speed-test profile
 

@@ -5,6 +5,14 @@ COPY packet-loss-server/Cargo.toml packet-loss-server/Cargo.lock ./
 COPY packet-loss-server/src ./src
 RUN cargo build --release --locked
 
+FROM node:22-bookworm-slim AS ui-builder
+
+WORKDIR /ui
+COPY ui/package.json ui/package-lock.json ./
+RUN npm ci
+COPY ui/ ./
+RUN npm run build
+
 FROM nginxinc/nginx-unprivileged:stable-bookworm
 
 USER root
@@ -21,6 +29,7 @@ COPY --chown=101:101 License.md /usr/share/nginx/html/LICENSE.txt
 COPY --chown=101:101 downloading upload /usr/share/nginx/html/
 COPY --chown=101:101 assets /usr/share/nginx/html/assets
 COPY --chown=101:101 packet-loss /usr/share/nginx/html/packet-loss
+COPY --from=ui-builder --chown=101:101 /ui/dist /usr/share/nginx/html/assets/landing
 
 RUN chmod 0755 /usr/local/bin/zvlz-entrypoint /usr/local/bin/openpacketloss-server \
     && mkdir -p /app \

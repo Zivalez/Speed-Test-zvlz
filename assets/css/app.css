@@ -1,4 +1,20 @@
 @font-face {
+  font-family: "Satoshi";
+  src: url("../fonts/Satoshi-Variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../fonts/Satoshi-VariableItalic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 300 900;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "ZVLZ Roboto";
   src: url("../fonts/roboto-v30-latin-regular.woff2") format("woff2");
   font-style: normal;
@@ -31,6 +47,11 @@
   --selection-bg: #9f3045;
   --selection-text: #fffdf8;
   --font-sans: "Satoshi", "ZVLZ Roboto", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --reel-dur: 1400ms;
+  --reel-cell: 38px;
+  --reel-spin-blur: 3px;
+  --reel-stagger: 90ms;
+  --reel-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 ::selection {
@@ -289,6 +310,57 @@ a {
   font-size: 38px;
   font-weight: 800;
   letter-spacing: -0.04em;
+}
+
+.metric-reel {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  overflow: visible;
+  color: var(--charcoal);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.t-reel-col {
+  position: relative;
+  width: 0.58em;
+  height: var(--reel-cell);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+
+.t-reel-strip {
+  display: flex;
+  flex-direction: column;
+  will-change: transform, filter;
+}
+
+.t-reel-digit {
+  flex: 0 0 var(--reel-cell);
+  height: var(--reel-cell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.t-reel-separator,
+.t-reel-static-digit {
+  display: inline-flex;
+  height: var(--reel-cell);
+  align-items: center;
+  justify-content: center;
+}
+
+.t-reel-separator {
+  width: 0.3em;
+}
+
+#downResultMob,
+#upResultMob {
+  font-size: 30px;
 }
 
 .metric-unit {
@@ -628,5 +700,10 @@ a {
 
   .loader-copy::after {
     animation: none !important;
+  }
+
+  .t-reel-strip {
+    filter: none !important;
+    transition: none !important;
   }
 }

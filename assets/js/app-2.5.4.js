@@ -328,61 +328,86 @@ window.onload = function() {
     this.retestButtonMob.el.style.display = "block";
     this.mobileLiveFooter.el.style.display = "none";
   };
+  function setMetricResult(element, value, spin) {
+    var metric = element.dataset.metric;
+    var targets = metric ? document.querySelectorAll('[data-metric="' + metric + '"]') : [element];
+    targets.forEach(function(target) {
+      if (spin && window.zvlzCounter?.set) {
+        window.zvlzCounter.set(target, value);
+      } else {
+        target.textContent = value;
+      }
+    });
+  }
+  function setMetricFontSize(element, size) {
+    var metric = element.dataset.metric;
+    var targets = metric ? document.querySelectorAll('[data-metric="' + metric + '"]') : [element];
+    targets.forEach(function(target) {
+      target.style.fontSize = size;
+    });
+  }
   openSpeedtestShow.prototype.uploadResult = function(upload) {
+    var value;
     if (upload < 1) {
-      this.upRestxt.el.textContent = upload.toFixed(3);
+      value = upload.toFixed(3);
     }
     if (upload >= 1 && upload < 9999) {
-      this.upRestxt.el.textContent = upload.toFixed(1);
+      value = upload.toFixed(1);
     }
     if (upload >= 10000 && upload < 99999) {
-      this.upRestxt.el.textContent = upload.toFixed(1);
-      this.upRestxt.el.style.fontSize = "20px";
+      value = upload.toFixed(1);
+      setMetricFontSize(this.upRestxt.el, "20px");
     }
     if (upload >= 100000) {
-      this.upRestxt.el.textContent = upload.toFixed(1);
-      this.upRestxt.el.style.fontSize = "18px";
+      value = upload.toFixed(1);
+      setMetricFontSize(this.upRestxt.el, "18px");
     }
+    setMetricResult(this.upRestxt.el, value, true);
   };
   openSpeedtestShow.prototype.pingResults = function(data, Display) {
     var ShowData = data;
-    if (Display === "Ping") {
+    if (Display === "Ping" || Display === "PingFinal") {
+      var value;
       if (ShowData >= 1 && ShowData < 10000) {
-        this.pingResult.el.textContent = Math.floor(ShowData);
+        value = Math.floor(ShowData);
         this.pingMobres.el.textContent = Math.floor(ShowData);
       } else if (ShowData >= 0 && ShowData < 1) {
         if (ShowData == 0) {
           ShowData = 0;
         }
-        this.pingResult.el.textContent = ShowData;
+        value = ShowData;
         this.pingMobres.el.textContent = ShowData;
       }
+      setMetricResult(this.pingResult.el, value, Display === "PingFinal");
     }
     if (Display === "Error") {
       this.oDoLiveSpeed.el.textContent = ShowData;
     }
   };
   openSpeedtestShow.prototype.downloadResult = function(download) {
+    var value;
     if (download < 1) {
-      this.downResult.el.textContent = download.toFixed(3);
+      value = download.toFixed(3);
     }
     if (download >= 1 && download < 9999) {
-      this.downResult.el.textContent = download.toFixed(1);
+      value = download.toFixed(1);
     }
     if (download >= 10000 && download < 99999) {
-      this.downResult.el.textContent = download.toFixed(1);
-      this.downResult.el.style.fontSize = "20px";
+      value = download.toFixed(1);
+      setMetricFontSize(this.downResult.el, "20px");
     }
     if (download >= 100000) {
-      this.downResult.el.textContent = download.toFixed(1);
-      this.downResult.el.style.fontSize = "18px";
+      value = download.toFixed(1);
+      setMetricFontSize(this.downResult.el, "18px");
     }
+    setMetricResult(this.downResult.el, value, true);
   };
   openSpeedtestShow.prototype.jitterResult = function(data, Display) {
     var ShowData = data;
-    if (Display === "Jitter") {
+    if (Display === "Jitter" || Display === "JitterFinal") {
+      var value;
       if (ShowData >= 1 && ShowData < 10000) {
-        this.jitterDesk.el.textContent = Math.floor(ShowData);
+        value = Math.floor(ShowData);
         if (ShowData >= 1 && ShowData < 100) {
           this.JitterResultMon.el.textContent = Math.floor(ShowData);
         }
@@ -394,9 +419,10 @@ window.onload = function() {
         if (ShowData == 0) {
           ShowData = 0;
         }
-        this.jitterDesk.el.textContent = ShowData;
+        value = ShowData;
         this.JitterResultMon.el.textContent = ShowData;
       }
+      setMetricResult(this.jitterDesk.el, value, Display === "JitterFinal");
     }
   };
   openSpeedtestShow.prototype.LiveSpeed = function(data, Display) {
@@ -1267,8 +1293,8 @@ window.onload = function() {
           statusJitterFinal = finalJitter[finalLeastPingResultIndex];
           statusPingTest = "Busy";
           Show.LiveSpeed(statusPingFinal, "Ping");
-          Show.pingResults(statusPingFinal, "Ping");
-          Show.jitterResult(statusJitterFinal, "Jitter");
+          Show.pingResults(statusPingFinal, "PingFinal");
+          Show.jitterResult(statusJitterFinal, "JitterFinal");
           pingEstimate = statusPingFinal;
           jitterEstimate = statusJitterFinal;
           if (SelectTest) {

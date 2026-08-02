@@ -53,22 +53,6 @@
       <path d="M0 12.5H130M0 25H130M0 37.5H130M32.5 0V50M65 0V50M97.5 0V50" class="graph-grid"/>
     </symbol>
 
-    <symbol id="downResultC1" viewBox="0 0 180 52">
-      <text id="downResult" x="0" y="36" class="metric-number">0.0</text>
-      <text x="116" y="35" class="metric-unit">MBPS</text>
-    </symbol>
-    <symbol id="upResultC2" viewBox="0 0 180 52">
-      <text id="upRestxt" x="0" y="36" class="metric-number">0.0</text>
-      <text x="116" y="35" class="metric-unit">MBPS</text>
-    </symbol>
-    <symbol id="pingResultC3" viewBox="0 0 150 52">
-      <text id="pingResult" x="0" y="36" class="metric-number">0</text>
-      <text x="82" y="35" class="metric-unit">MS</text>
-    </symbol>
-    <symbol id="jitterResultC3" viewBox="0 0 150 52">
-      <text id="jitterDesk" x="0" y="36" class="metric-number">0</text>
-      <text x="82" y="35" class="metric-unit">MS</text>
-    </symbol>
     <symbol id="jitterMob" viewBox="0 0 150 52">
       <text id="pingMobres" x="0" y="34" class="metric-number">0</text>
       <text x="62" y="34" class="metric-unit">MS</text>
@@ -146,7 +130,10 @@
           <rect x="686" y="102" width="225" height="246" class="coral-shadow" opacity="0.18"/>
           <rect x="680" y="96" width="225" height="246" class="surface"/>
           <text x="706" y="130" class="metric-label">01 / DOWNLOAD</text>
-          <use href="#downResultC1" x="706" y="146" width="180" height="52"/>
+          <foreignObject x="706" y="146" width="132" height="52">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="downResult" data-metric="download" class="metric-number metric-reel t-reel" aria-live="polite">0.0</div>
+          </foreignObject>
+          <text x="840" y="181" class="metric-unit">MBPS</text>
           <use href="#graphc1" x="706" y="230" width="174" height="68"/>
           <text x="706" y="320" class="micro-copy">SERVER → BROWSER</text>
         </g>
@@ -154,7 +141,10 @@
         <g aria-label="Upload result">
           <rect x="925" y="96" width="217" height="246" class="surface-dark"/>
           <text x="951" y="130" class="metric-label metric-label-dark">02 / UPLOAD</text>
-          <use href="#upResultC2" x="951" y="146" width="170" height="52" style="--charcoal:var(--cream);--muted:#b8afa0"/>
+          <foreignObject x="951" y="146" width="132" height="52" style="--charcoal:var(--cream)">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="upRestxt" data-metric="upload" class="metric-number metric-reel t-reel" aria-live="polite">0.0</div>
+          </foreignObject>
+          <text x="1085" y="181" class="metric-unit metric-label-dark">MBPS</text>
           <use href="#graphc2" x="951" y="230" width="166" height="68"/>
           <text x="951" y="320" class="micro-copy metric-label-dark">BROWSER → SERVER</text>
         </g>
@@ -162,7 +152,10 @@
         <g aria-label="Ping result" style="--charcoal:#201d18;--muted:#531d2a">
           <rect x="680" y="362" width="225" height="254" class="surface-accent"/>
           <text x="706" y="398" class="metric-label">03 / LATENCY</text>
-          <use href="#pingResultC3" x="706" y="420" width="160" height="62"/>
+          <foreignObject x="706" y="420" width="88" height="52">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="pingResult" data-metric="latency" class="metric-number metric-reel t-reel" aria-live="polite">0</div>
+          </foreignObject>
+          <text x="798" y="455" class="metric-unit">MS</text>
           <path d="M706 510H879" stroke="var(--charcoal)"/>
           <text x="706" y="548" class="micro-copy">BEST OF 10 HTTP PASSES</text>
           <text x="706" y="582" class="hero-copy" style="font-size:11px;fill:var(--charcoal)">Lower is more responsive.</text>
@@ -171,7 +164,10 @@
         <g aria-label="Jitter result">
           <rect x="925" y="362" width="217" height="254" class="surface"/>
           <text x="951" y="398" class="metric-label">04 / JITTER</text>
-          <use href="#jitterResultC3" x="951" y="420" width="160" height="62"/>
+          <foreignObject x="951" y="420" width="88" height="52">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="jitterDesk" data-metric="jitter" class="metric-number metric-reel t-reel" aria-live="polite">0</div>
+          </foreignObject>
+          <text x="1043" y="455" class="metric-unit">MS</text>
           <path d="M951 510H1117" stroke="var(--charcoal)"/>
           <text x="951" y="548" class="micro-copy">LATENCY VARIATION</text>
           <text x="951" y="582" class="hero-copy" style="font-size:11px">Lower is more stable.</text>
@@ -283,25 +279,37 @@
         <g>
           <rect x="24" y="394" width="155" height="145" class="surface"/>
           <text x="40" y="420" class="metric-label" style="font-size:8px">01 / DOWNLOAD</text>
-          <use href="#downResultC1" x="40" y="434" width="130" height="48"/>
+          <foreignObject x="40" y="434" width="100" height="48">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="downResultMob" data-metric="download" class="metric-number metric-reel t-reel" aria-live="polite">0.0</div>
+          </foreignObject>
+          <text x="143" y="467" class="metric-unit" style="font-size:8px">MBPS</text>
           <text x="40" y="518" class="micro-copy" style="font-size:7px">SERVER → BROWSER</text>
         </g>
         <g>
           <rect x="195" y="394" width="155" height="145" class="surface-dark"/>
           <text x="211" y="420" class="metric-label metric-label-dark" style="font-size:8px">02 / UPLOAD</text>
-          <use href="#upResultC2" x="211" y="434" width="130" height="48" style="--charcoal:var(--cream);--muted:#b8afa0"/>
+          <foreignObject x="211" y="434" width="100" height="48" style="--charcoal:var(--cream)">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="upResultMob" data-metric="upload" class="metric-number metric-reel t-reel" aria-live="polite">0.0</div>
+          </foreignObject>
+          <text x="314" y="467" class="metric-unit metric-label-dark" style="font-size:8px">MBPS</text>
           <text x="211" y="518" class="micro-copy metric-label-dark" style="font-size:7px">BROWSER → SERVER</text>
         </g>
         <g style="--charcoal:#201d18;--muted:#531d2a">
           <rect x="24" y="555" width="155" height="145" class="surface-accent"/>
           <text x="40" y="581" class="metric-label" style="font-size:8px">03 / LATENCY</text>
-          <use href="#pingResultC3" x="40" y="596" width="130" height="48"/>
+          <foreignObject x="40" y="596" width="82" height="48">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="pingResultMob" data-metric="latency" class="metric-number metric-reel t-reel" aria-live="polite">0</div>
+          </foreignObject>
+          <text x="126" y="629" class="metric-unit" style="font-size:8px">MS</text>
           <text x="40" y="680" class="micro-copy" style="font-size:7px">BEST OF 10 PASSES</text>
         </g>
         <g>
           <rect x="195" y="555" width="155" height="145" class="surface"/>
-          <text x="211" y="581" class="metric-label" style="font-size:8px">04 / PING + JITTER</text>
-          <use href="#jitterMob" x="211" y="596" width="130" height="48"/>
+          <text x="211" y="581" class="metric-label" style="font-size:8px">04 / JITTER</text>
+          <foreignObject x="211" y="596" width="82" height="48">
+            <div xmlns="http://www.w3.org/1999/xhtml" id="jitterResultMob" data-metric="jitter" class="metric-number metric-reel t-reel" aria-live="polite">0</div>
+          </foreignObject>
+          <text x="297" y="629" class="metric-unit" style="font-size:8px">MS</text>
           <text x="211" y="680" class="micro-copy" style="font-size:7px">LOWER IS STABLE</text>
         </g>
       </g>
