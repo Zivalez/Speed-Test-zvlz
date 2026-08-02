@@ -32,6 +32,7 @@ function setSkin(mode) {
 
   createCookie("mode", mode, 365);
   syncThemeControls();
+  window.zvlzSfx?.themeChanged(mode);
 }
 
 function toggleSkin() {

@@ -10,7 +10,18 @@
   --muted: #6d6b69;
   --line: #201d18;
   --paper: #fffdf8;
+  --selection: #f4a17f;
   --font-sans: "Satoshi", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+::selection {
+  color: var(--charcoal);
+  background: var(--selection);
+}
+
+::-moz-selection {
+  color: var(--charcoal);
+  background: var(--selection);
 }
 
 * {
@@ -378,6 +389,8 @@ a {
   fill: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 8px;
+  text-anchor: middle;
+  dominant-baseline: middle;
 }
 
 .progress-track {
@@ -415,10 +428,58 @@ a {
   stroke: var(--wine);
 }
 
-.Symbol,
-.direction-icon {
+.Symbol {
   fill: var(--coral);
   stroke: none;
+}
+
+.direction-icon-bg {
+  fill: var(--charcoal);
+  stroke: var(--cream);
+  stroke-width: 1.5px;
+}
+
+.direction-icon-arrow {
+  fill: var(--cream);
+  stroke: none;
+}
+
+.direction-icon-accent {
+  fill: var(--coral);
+}
+
+.retest-control {
+  display: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.retest-control .retest-base {
+  fill: var(--charcoal);
+  stroke: var(--charcoal);
+  stroke-width: 1px;
+}
+
+.retest-control .retest-depth {
+  fill: var(--coral);
+}
+
+.retest-control:hover .retest-base,
+.retest-control:focus .retest-base {
+  fill: var(--teal-deep);
+  stroke: var(--teal-deep);
+}
+
+.sound-control {
+  cursor: pointer;
+  outline: none;
+}
+
+.sound-control:hover .sound-panel,
+.sound-control:focus .sound-panel {
+  fill: var(--cream);
+  stroke: var(--teal);
+  stroke-width: 2px;
 }
 
 .ConnectError {
@@ -482,6 +543,10 @@ a {
 
   .Desktop {
     display: none;
+  }
+
+  .readout-value {
+    font-size: 52px;
   }
 
   .Mobile {

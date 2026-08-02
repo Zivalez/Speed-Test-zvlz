@@ -4,6 +4,8 @@ A private, self-hosted browser benchmark for the ZVLZ Tokyo node. It measures HT
 
 The measurement engine is based on OpenSpeedTest 2.5.4. The interface, branding, privacy behavior, and container deployment are customized for ZVLZ Tokyo.
 
+Interface audio uses the locally vendored UI SFX 0.4.0 runtime with the `zen` pack. Sound is optional, persists its on/off preference in the browser, and never uses the hover cue.
+
 ## What it measures
 
 - Download and upload throughput in Mbps
@@ -65,4 +67,4 @@ Results are calculated in the browser and are not stored by default. The customi
 
 ## License and attribution
 
-The original OpenSpeedTest measurement engine is distributed under the MIT License. See `License.md`. Copyright and license notices must be retained in redistributed copies.
+The original OpenSpeedTest measurement engine is distributed under the MIT License. See `License.md`. UI SFX code is MIT licensed and its audio is CC0; the corresponding notices are stored in `assets/vendor`. Copyright and license notices must be retained in redistributed copies.

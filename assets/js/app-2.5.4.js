@@ -81,6 +81,9 @@ window.onload = function() {
     this.oDoTopSpeed = _("oDoTopSpeed");
     this.startButtonMob = _("startButtonMob");
     this.startButtonDesk = _("startButtonDesk");
+    this.retestButtonDesk = _("retestButtonDesk");
+    this.retestButtonMob = _("retestButtonMob");
+    this.mobileLiveFooter = _("mobileLiveFooter");
     this.intro_Desk = _("intro-Desk");
     this.intro_Mob = _("intro-Mob");
     this.loader = _("loading_app");
@@ -319,6 +322,11 @@ window.onload = function() {
     this.ConnectErrorMob.el.style.display = "block";
     this.ConnectErrorDesk.el.style.display = "block";
   };
+  openSpeedtestShow.prototype.showRetest = function() {
+    this.retestButtonDesk.el.style.display = "block";
+    this.retestButtonMob.el.style.display = "block";
+    this.mobileLiveFooter.el.style.display = "none";
+  };
   openSpeedtestShow.prototype.uploadResult = function(upload) {
     if (upload < 1) {
       this.upRestxt.el.textContent = upload.toFixed(3);
@@ -406,8 +414,8 @@ window.onload = function() {
       }
       this.oDoLiveSpeed.el.textContent = ShowData;
       this.oDoTopSpeed.el.textContent = "1000+";
-      this.oDoTopSpeed.el.style.fontSize = "16.9px";
-      this.oDoTopSpeed.el.style.fill = "gray";
+      this.oDoTopSpeed.el.style.fontSize = "10px";
+      this.oDoTopSpeed.el.style.fill = "var(--muted)";
       return;
     }
     if (Display === "Ping") {
@@ -434,13 +442,13 @@ window.onload = function() {
       }
       if (ShowData <= 1000) {
         this.oDoTopSpeed.el.textContent = "1000+";
-        this.oDoTopSpeed.el.style.fontSize = "16.9px";
-        this.oDoTopSpeed.el.style.fill = "gray";
+        this.oDoTopSpeed.el.style.fontSize = "10px";
+        this.oDoTopSpeed.el.style.fill = "var(--muted)";
       }
       if (ShowData >= 1010) {
         this.oDoTopSpeed.el.textContent = Math.floor(ShowData / 1010) * 1000 + "+";
-        this.oDoTopSpeed.el.style.fill = "gray";
-        this.oDoTopSpeed.el.style.fontSize = "17.2px";
+        this.oDoTopSpeed.el.style.fill = "var(--muted)";
+        this.oDoTopSpeed.el.style.fontSize = "10px";
       }
     }
   };
@@ -820,7 +828,9 @@ window.onload = function() {
         ServerConnect(7);
         requestIP = false;
       }
+      var willOpen = Show.ipDesk.el.style.display !== "block";
       Show.ip();
+      window.zvlzSfx?.play(willOpen ? "open" : "close");
     }
     function runTasks() {
       if (addEvent) {
@@ -908,6 +918,7 @@ window.onload = function() {
       var Engine = setInterval(function() {
         if (Status === "Loaded") {
           Status = "busy";
+          window.zvlzSfx?.beginTest();
           sendPing(0);
         }
         if (Status === "Ping") {
@@ -915,6 +926,7 @@ window.onload = function() {
           Show.showStatus("Milliseconds");
         }
         if (Status === "Download") {
+          window.zvlzSfx?.stage("download");
           Show.showStatus("Initializing..");
           Get.reset();
           reSett();
@@ -958,6 +970,7 @@ window.onload = function() {
         }
         if (Status == "Upload") {
           if (stop === 1) {
+            window.zvlzSfx?.stage("upload");
             Show.Symbol(1);
             Status = "initup";
             Show.showStatus("Initializing..");
@@ -1001,6 +1014,8 @@ window.onload = function() {
         if (Status === "Error") {
           Show.showStatus("NETWORK ERROR / CHECK THE ROUTE");
           Show.ConnectionError();
+          Show.showRetest();
+          window.zvlzSfx?.fail();
           Status = "busy";
           clearInterval(Engine);
           Show.oDoLiveSpeed.el.textContent = "Network Error";
@@ -1008,6 +1023,8 @@ window.onload = function() {
         if (Status === "SendR") {
           Show.showStatus("COMPLETE / RESULTS STAY LOCAL");
           Show.oDoLiveSpeed.el.textContent = ost;
+          Show.showRetest();
+          window.zvlzSfx?.complete();
           if (saveData) {
             saveTestData = "d=" + downloadSpeed.toFixed(3) + "&u=" + uploadSpeed.toFixed(3) + "&p=" + pingEstimate + "&j=" + jitterEstimate + "&dd=" + (dataUsedfordl / 1048576).toFixed(3) + "&ud=" + (dataUsedforul / 1048576).toFixed(3) + "&ua=" + encodeURIComponent(userAgentString);
             ServerConnect(5);
