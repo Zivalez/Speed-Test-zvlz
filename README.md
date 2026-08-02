@@ -4,7 +4,7 @@ A private, self-hosted browser benchmark for the ZVLZ Tokyo node. It measures HT
 
 The measurement engine is based on OpenSpeedTest 2.5.4. The interface, branding, privacy behavior, and container deployment are customized for ZVLZ Tokyo.
 
-Interface audio uses the locally vendored UI SFX 0.4.0 runtime with the `zen` pack. Sound is optional, persists its on/off preference in the browser, and never uses the hover cue.
+Interface audio uses the locally vendored UI SFX 0.4.0 runtime with the `studio` pack at full master volume. Sound is optional, persists its on/off preference in the browser, and never uses the hover cue.
 
 ## What it measures
 

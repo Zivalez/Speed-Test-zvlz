@@ -5,23 +5,26 @@
   --coral: #e84d2a;
   --wine: #9f3045;
   --burgundy: #531d2a;
-  --teal: #0c7893;
-  --teal-deep: #073e4a;
+  --secondary-accent: #9f3045;
+  --secondary-deep: #531d2a;
+  --graph-download: #e84d2a;
+  --graph-upload: #f4cbc2;
   --muted: #6d6b69;
   --line: #201d18;
   --paper: #fffdf8;
-  --selection: #f4a17f;
+  --selection-bg: #9f3045;
+  --selection-text: #fffdf8;
   --font-sans: "Satoshi", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
 ::selection {
-  color: var(--charcoal);
-  background: var(--selection);
+  color: var(--selection-text);
+  background: var(--selection-bg);
 }
 
 ::-moz-selection {
-  color: var(--charcoal);
-  background: var(--selection);
+  color: var(--selection-text);
+  background: var(--selection-bg);
 }
 
 * {
@@ -203,10 +206,6 @@ a {
   fill: var(--wine);
 }
 
-.teal-block {
-  fill: var(--teal);
-}
-
 .brand-kicker,
 .eyebrow,
 .metric-label,
@@ -354,7 +353,7 @@ a {
 .reset-control:hover .reset-panel,
 .reset-control:focus .reset-panel {
   fill: var(--cream);
-  stroke: var(--teal);
+  stroke: var(--secondary-accent);
   stroke-width: 2;
 }
 
@@ -402,7 +401,7 @@ a {
 
 .intro-Progress {
   fill: none;
-  stroke: var(--teal);
+  stroke: var(--secondary-accent);
   stroke-width: 5px;
   stroke-linecap: butt;
   stroke-dasharray: 400;
@@ -417,15 +416,15 @@ a {
 
 .line,
 .line2 {
-  fill: rgba(12, 120, 147, 0.17);
-  stroke: var(--teal);
+  fill: rgba(232, 77, 42, 0.14);
+  stroke: var(--graph-download);
   stroke-width: 1.4;
   stroke-linejoin: miter;
 }
 
 .line2 {
-  fill: rgba(159, 48, 69, 0.15);
-  stroke: var(--wine);
+  fill: rgba(244, 203, 194, 0.16);
+  stroke: var(--graph-upload);
 }
 
 .Symbol {
@@ -466,8 +465,8 @@ a {
 
 .retest-control:hover .retest-base,
 .retest-control:focus .retest-base {
-  fill: var(--teal-deep);
-  stroke: var(--teal-deep);
+  fill: var(--secondary-deep);
+  stroke: var(--secondary-deep);
 }
 
 .sound-control {
@@ -478,7 +477,7 @@ a {
 .sound-control:hover .sound-panel,
 .sound-control:focus .sound-panel {
   fill: var(--cream);
-  stroke: var(--teal);
+  stroke: var(--secondary-accent);
   stroke-width: 2px;
 }
 

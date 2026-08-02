@@ -27,9 +27,9 @@
 
     <symbol id="oDoMeter" viewBox="0 0 300 250">
       <text x="36" y="226" class="meter-label">0</text>
-      <text x="81" y="96" class="meter-label">1</text>
-      <text x="150" y="73" class="meter-label">10</text>
-      <text x="219" y="96" class="meter-label">100</text>
+      <text x="65" y="75" class="meter-label">1</text>
+      <text x="150" y="38" class="meter-label">10</text>
+      <text x="235" y="75" class="meter-label">100</text>
       <text id="oDoTopSpeed" x="264" y="226" class="top-speed">1000+</text>
     </symbol>
 
@@ -111,7 +111,7 @@
           <use href="#zvlzMark" x="40" y="30" width="42" height="42" style="color:var(--cream)"/>
           <text x="96" y="49" class="brand-kicker">ZVLZ NETWORK</text>
           <text x="96" y="68" class="brand-name" style="font-size:20px">TOKYO</text>
-          <text x="735" y="55" class="node-label">HTTP / 6 STREAMS / LOCAL</text>
+          <text x="735" y="55" class="node-label">HTTP / 6 STREAMS / TOKYO</text>
           <g class="sound-control" onclick="toggleZvlzSound()" tabindex="0" role="button" aria-label="Toggle interface sound" aria-pressed="true">
             <rect x="960" y="29" width="86" height="42" class="sound-panel surface"/>
             <text x="1003" y="55" class="node-label sound-status" text-anchor="middle">SFX ON</text>
@@ -159,7 +159,7 @@
           <text x="951" y="320" class="micro-copy metric-label-dark">BROWSER → SERVER</text>
         </g>
 
-        <g aria-label="Ping result">
+        <g aria-label="Ping result" style="--charcoal:#201d18;--muted:#531d2a">
           <rect x="680" y="362" width="225" height="254" class="surface-accent"/>
           <text x="706" y="398" class="metric-label">03 / LATENCY</text>
           <use href="#pingResultC3" x="706" y="420" width="160" height="62"/>
@@ -199,11 +199,11 @@
           <text x="996" y="57" class="node-label sound-status" text-anchor="middle">SFX ON</text>
         </g>
 
-        <text x="64" y="150" class="eyebrow">PRIVATE NETWORK BENCHMARK / 35.6762° N</text>
+        <text x="64" y="150" class="eyebrow">NETWORK BENCHMARK / 35.6762° N</text>
         <text x="64" y="225" class="hero-title">Measure the route.</text>
         <text x="64" y="292" class="hero-title">Not the promise.</text>
         <text x="68" y="344" class="hero-copy">A direct browser-to-server benchmark for the ZVLZ Tokyo node.</text>
-        <text x="68" y="370" class="hero-copy">No account. No history. One honest HTTP path.</text>
+        <text x="68" y="370" class="hero-copy">Latency, jitter, download, and upload in one pass.</text>
 
         <g id="startButtonDesk" class="startButton" tabindex="0" role="button" aria-label="Start network test">
           <rect x="68" y="451" width="286" height="76" class="button-depth"/>
@@ -233,10 +233,10 @@
         <text x="798" y="472" class="node-label" text-anchor="middle" style="fill:var(--charcoal)">HTTP 1.1</text>
         <rect x="869" y="446" width="132" height="42" fill="none" stroke="var(--cream)"/>
         <text x="935" y="472" class="node-label" text-anchor="middle" style="fill:var(--cream)">SELF HOSTED</text>
-        <rect x="1017" y="446" width="78" height="42" class="teal-block"/>
+        <rect x="1017" y="446" width="78" height="42" class="wine-block"/>
         <text x="1056" y="472" class="node-label" text-anchor="middle" style="fill:var(--cream)">LIVE</text>
 
-        <text x="68" y="618" class="micro-copy">PRESS ENTER TO START / RESULTS ARE NOT STORED</text>
+        <text x="68" y="618" class="micro-copy">PRESS ENTER TO START</text>
       </g>
     </svg>
 
@@ -291,7 +291,7 @@
           <use href="#upResultC2" x="211" y="434" width="130" height="48" style="--charcoal:var(--cream);--muted:#b8afa0"/>
           <text x="211" y="518" class="micro-copy metric-label-dark" style="font-size:7px">BROWSER → SERVER</text>
         </g>
-        <g>
+        <g style="--charcoal:#201d18;--muted:#531d2a">
           <rect x="24" y="555" width="155" height="145" class="surface-accent"/>
           <text x="40" y="581" class="metric-label" style="font-size:8px">03 / LATENCY</text>
           <use href="#pingResultC3" x="40" y="596" width="130" height="48"/>
@@ -324,7 +324,7 @@
           <text x="267" y="48" class="node-label sound-status" text-anchor="middle" style="font-size:7px">SFX ON</text>
         </g>
 
-        <text x="26" y="124" class="eyebrow" style="font-size:8px">PRIVATE NETWORK BENCHMARK / TOKYO</text>
+        <text x="26" y="124" class="eyebrow" style="font-size:8px">NETWORK BENCHMARK / TOKYO</text>
         <text x="26" y="176" class="hero-title" style="font-size:40px">Measure the</text>
         <text x="26" y="220" class="hero-title" style="font-size:40px">route.</text>
         <text x="26" y="264" class="hero-title" style="font-size:38px;fill:var(--coral)">Not the promise.</text>

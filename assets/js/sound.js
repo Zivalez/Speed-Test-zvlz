@@ -1,8 +1,10 @@
 import { createUISFX } from "../vendor/uisfx.js";
 
+// Packs: minimal, soft, glass, arcade, mechanical, organic, dreamy,
+// scifi, rubber, cinematic, studio, and zen.
 const player = createUISFX({
-  pack: "zen",
-  volume: 0.7,
+  pack: "studio",
+  volume: 1,
   preferences: { key: "zvlz-tokyo:sound" }
 });
 

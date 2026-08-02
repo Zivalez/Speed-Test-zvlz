@@ -1021,7 +1021,7 @@ window.onload = function() {
           Show.oDoLiveSpeed.el.textContent = "Network Error";
         }
         if (Status === "SendR") {
-          Show.showStatus("COMPLETE / RESULTS STAY LOCAL");
+          Show.showStatus("COMPLETE / TEST FINISHED");
           Show.oDoLiveSpeed.el.textContent = ost;
           Show.showRetest();
           window.zvlzSfx?.complete();
