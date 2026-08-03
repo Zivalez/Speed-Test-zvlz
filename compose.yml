@@ -7,19 +7,15 @@ services:
     restart: unless-stopped
 
     environment:
-      PLATFORM_MODE: "${PLATFORM_MODE:-self}"
-      PORT: "${PORT:-8080}"
-
-      STUN_PORT: "${STUN_PORT:-3478}"
-      STUN_URL: "${STUN_URL:-auto}"
-
-      ICE_PORT_MIN: "${ICE_PORT_MIN:-40000}"
-      ICE_PORT_MAX: "${ICE_PORT_MAX:-40050}"
-
-      NODE_GEO_AUTO_DETECT: "${NODE_GEO_AUTO_DETECT:-true}"
-      NODE_GEO_API: "${NODE_GEO_API:-https://ipwho.is}"
-
-      NAT_1TO1_IP: "${NAT_1TO1_IP}"
+      PLATFORM_MODE: ${PLATFORM_MODE:-self}
+      PORT: ${PORT:-8080}
+      STUN_PORT: ${STUN_PORT:-3478}
+      STUN_URL: ${STUN_URL:-auto}
+      ICE_PORT_MIN: ${ICE_PORT_MIN:-40000}
+      ICE_PORT_MAX: ${ICE_PORT_MAX:-40050}
+      NODE_GEO_AUTO_DETECT: ${NODE_GEO_AUTO_DETECT:-true}
+      NODE_GEO_API: ${NODE_GEO_API:-https://ipwho.is}
+      NAT_1TO1_IP: ${NAT_1TO1_IP}
 
     ports:
       - "3478:3478/udp"
@@ -27,6 +23,9 @@ services:
 
     expose:
       - "3000"
+
+    networks:
+      - dokploy-network
 
     security_opt:
       - no-new-privileges:true
@@ -39,3 +38,7 @@ services:
       - /var/run:size=8m,mode=0755,uid=101,gid=101
 
     stop_grace_period: 20s
+
+networks:
+  dokploy-network:
+    external: true
