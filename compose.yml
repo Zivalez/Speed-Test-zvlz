@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
 
+    restart: unless-stopped
+
     environment:
       PLATFORM_MODE: "${PLATFORM_MODE:-self}"
       PORT: "${PORT:-8080}"
@@ -37,10 +39,3 @@ services:
       - /var/run:size=8m,mode=0755,uid=101,gid=101
 
     stop_grace_period: 20s
-
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: any
-        delay: 5s
-        max_attempts: 5
